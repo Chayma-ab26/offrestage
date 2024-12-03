@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+            <div class="card-body">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="mb-3 text-center">
+                        You are logged in as <strong>{{ app.user.userIdentifier }}</strong>.
+                        <a href="{{ path('app_logout') }}" class="btn btn-sm btn-danger">Logout</a>
+                    </div>
+                {% else %}
+                    <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
+
+                    <form method="post">
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                            <label for="inputEmail">Email</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                            <label for="inputPassword">Password</label>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <button class="btn btn-lg btn-primary w-100" type="submit">
+                            Sign in
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small>Don't have an account? <a href="{{ path('app_register') }}">Register here</a></small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

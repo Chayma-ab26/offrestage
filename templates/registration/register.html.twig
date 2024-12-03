@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 bg-gradient">
+        <div class="row w-100">
+            <div class="col-12 col-md-8 col-lg-6 mx-auto">
+                <div class="card shadow-lg border-0 rounded-4 p-3">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4 text-primary">Create an Account</h2>
+                        <p class="text-center text-muted mb-5">Join us and start your journey</p>
+
+                        {{ form_start(registrationForm, { 'attr': {'class': 'needs-validation', 'novalidate': 'true'} }) }}
+
+                        <!-- Email Field -->
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.email, {
+                                'attr': {'class': 'form-control', 'placeholder': 'Enter your email'}
+                            }) }}
+                            {{ form_label(registrationForm.email, 'Email Address') }}
+                        </div>
+
+                        <!-- Roles Field -->
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.roles, {
+                                'attr': {'class': 'form-select', 'aria-label': 'Role selection'}
+                            }) }}
+                            {{ form_label(registrationForm.roles, 'Select Role') }}
+                        </div>
+
+                        <!-- Etudiant Specific Fields -->
+                        <div id="fields-role-etudiant" class="role-specific-fields" style="display: none;">
+                            <h5 class="mt-4 text-secondary">Etudiant Details</h5>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.nom, { 'attr': {'class': 'form-control', 'placeholder': 'Nom' } }) }}
+                                {{ form_label(registrationForm.nom, 'Nom') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.prenom, { 'attr': {'class': 'form-control', 'placeholder': 'Prénom' } }) }}
+                                {{ form_label(registrationForm.prenom, 'Prénom') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.skills, { 'attr': {'class': 'form-control', 'placeholder': 'Skills' } }) }}
+                                {{ form_label(registrationForm.skills, 'Skills') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.experiences, { 'attr': {'class': 'form-control', 'placeholder': 'Expériences' } }) }}
+                                {{ form_label(registrationForm.experiences, 'Experiences') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.educations, { 'attr': {'class': 'form-control', 'placeholder': 'Education' } }) }}
+                                {{ form_label(registrationForm.educations, 'Education') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.profilsummary, { 'attr': {'class': 'form-control', 'placeholder': 'Profile Summary' } }) }}
+                                {{ form_label(registrationForm.profilsummary, 'Profile Summary') }}
+                            </div>
+                        </div>
+
+                        <!-- Entreprise Specific Fields -->
+                        <div id="fields-role-entreprise" class="role-specific-fields" style="display: none;">
+                            <h5 class="mt-4 text-secondary">Entreprise Details</h5>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.nomentreprise, { 'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'entreprise' } }) }}
+                                {{ form_label(registrationForm.nomentreprise, 'Nom de l\'entreprise') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.descriptionentreprise, { 'attr': {'class': 'form-control', 'placeholder': 'Description de l\'entreprise' } }) }}
+                                {{ form_label(registrationForm.descriptionentreprise, 'Entreprise Description') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.secteurActivite, { 'attr': {'class': 'form-control', 'placeholder': 'Secteur d\'activité' } }) }}
+                                {{ form_label(registrationForm.secteurActivite, 'Secteur d\'activité') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.telephoneentreprise, { 'attr': {'class': 'form-control', 'placeholder': 'Téléphone' } }) }}
+                                {{ form_label(registrationForm.telephoneentreprise, 'Téléphone') }}
+                            </div>
+                            <div class="form-floating mb-3">
+                                {{ form_widget(registrationForm.adresseentreprise, { 'attr': {'class': 'form-control', 'placeholder': 'Adresse' } }) }}
+                                {{ form_label(registrationForm.adresseentreprise, 'Adresse') }}
+                            </div>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.plainPassword, {
+                                'attr': {'class': 'form-control', 'placeholder': 'Enter your password'}
+                            }) }}
+                            {{ form_label(registrationForm.plainPassword, 'Password') }}
+                        </div>
+
+                        <!-- Terms Agreement -->
+                        <div class="form-check mb-3">
+                            {{ form_widget(registrationForm.agreeTerms, {
+                                'attr': {'class': 'form-check-input'}
+                            }) }}
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the terms and conditions.
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                        </div>
+
+                        <!-- Login Link -->
+                        <p class="text-center">
+                            Already have an account? <a href="{{ path('app_login') }}" class="text-decoration-none">Login here</a>
+                        </p>
+
+                        {{ form_end(registrationForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript pour afficher/masquer les champs en fonction du rôle sélectionné
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleField = document.querySelector('[name="registration_form[roles]"]');
+            const etudiantFields = document.getElementById('fields-role-etudiant');
+            const entrepriseFields = document.getElementById('fields-role-entreprise');
+
+            function toggleFields() {
+                const selectedRole = roleField.value;
+
+                if (selectedRole === 'ROLE_ETUDIANT') {
+                    etudiantFields.style.display = 'block';
+                    entrepriseFields.style.display = 'none';
+                } else if (selectedRole === 'ROLE_ENTREPRISE') {
+                    etudiantFields.style.display = 'none';
+                    entrepriseFields.style.display = 'block';
+                } else {
+                    etudiantFields.style.display = 'none';
+                    entrepriseFields.style.display = 'none';
+                }
+            }
+
+            // Initialisation
+            toggleFields();
+
+            // Écouter les changements
+            roleField.addEventListener('change', toggleFields);
+        });
+    </script>
+{% endblock %}

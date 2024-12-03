@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}OffreStage{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-dark text-white text-center py-3">
+                        <h4 class="mb-0">Détails de l'Offre de Stage</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <table class="table table-hover">
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row" class="font-weight-bold text-muted">Id</th>
+                                        <td>{{ offre_stage.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="font-weight-bold text-muted">Titre</th>
+                                        <td>{{ offre_stage.titre }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="font-weight-bold text-muted">Description</th>
+                                        <td>{{ offre_stage.description }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="font-weight-bold text-muted">Date de Publication</th>
+                                        <td>{{ offre_stage.datePublication ? offre_stage.datePublication|date('Y-m-d H:i:s') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="font-weight-bold text-muted">Date d'Expiration</th>
+                                        <td>{{ offre_stage.dateExpiration ? offre_stage.dateExpiration|date('Y-m-d H:i:s') : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="font-weight-bold text-muted">Type de Contrat</th>
+                                        <td>{{ offre_stage.typecontrat }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="{{ path('app_offre_stage_index') }}" class="btn btn-outline-primary btn-lg px-5 py-3 mb-3 transition-btn">Retour à la liste</a>
+                            <a href="{{ path('app_offre_stage_edit', {'id': offre_stage.id}) }}" class="btn btn-outline-success btn-lg px-5 py-3 mb-3 transition-btn">Modifier l'offre</a>
+                            <button id="deleteBtn" class="btn btn-outline-danger btn-lg px-5 py-3 mb-3 transition-btn">Supprimer l'offre</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de suppression caché -->
+        <div id="deleteFormContainer" class="mt-4" style="display: none;">
+            {{ include('offre_stage/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    <!-- JavaScript pour l'interactivité et l'animation AJAX -->
+    <script>
+        // Gestion de la suppression avec confirmation AJAX
+        document.getElementById('deleteBtn').addEventListener('click', function() {
+            // Confirmation avant la suppression
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette offre de stage ?')) {
+                // Désactiver le bouton pour éviter les clics multiples
+                document.getElementById('deleteBtn').disabled = true;
+                document.getElementById('deleteBtn').innerHTML = 'Suppression en cours...';
+
+                // Envoi de la requête AJAX pour supprimer l'offre de stage
+                fetch('{{ path('app_offre_stage_delete', {'id': offre_stage.id}) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ _token: '{{ csrf_token('delete' ~ offre_stage.id) }}' })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Offre de stage supprimée avec succès!');
+                            window.location.href = '{{ path('app_offre_stage_index') }}'; // Redirection vers la liste
+                        } else {
+                            alert('Erreur lors de la suppression. Veuillez réessayer.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur AJAX:', error);
+                        alert('Une erreur est survenue.');
+                    })
+                    .finally(() => {
+                        // Réactivation du bouton après traitement
+                        document.getElementById('deleteBtn').disabled = false;
+                        document.getElementById('deleteBtn').innerHTML = 'Supprimer l\'offre';
+                    });
+            }
+        });
+    </script>
+
+    <!-- Styles pour une interface moderne et élégante -->
+    <style>
+        /* Boutons avec effet de transition */
+        .transition-btn {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .transition-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        /* Carte avec ombre et coins arrondis */
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Carte de fond sombre avec un contraste élégant */
+        .card-header {
+            background-color: #343a40;
+        }
+
+        /* Couleur de texte spécifique */
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        /* Style pour le tableau */
+        table {
+            font-size: 1.1rem;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        table th {
+            background-color: #f7f8fa;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f1f3f5;
+        }
+
+        /* Animation de suppression avec un fade-out */
+        #deleteFormContainer {
+            animation: fadeOut 1s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Style des boutons d'action */
+        .btn-outline-primary, .btn-outline-success, .btn-outline-danger {
+            font-size: 1rem;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Style pour les messages de confirmation */
+        .alert {
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+    </style>
+{% endblock %}
