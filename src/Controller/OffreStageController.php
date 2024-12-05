@@ -78,4 +78,6 @@ final class OffreStageController extends AbstractController
 
         return $this->redirectToRoute('app_offre_stage_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

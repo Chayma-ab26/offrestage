@@ -15,7 +15,13 @@ class OffreStageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, OffreStage::class);
     }
-
+    public function countOffres(): int
+    {
+        return $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
     //    /**
     //     * @return OffreStage[] Returns an array of OffreStage objects
     //     */

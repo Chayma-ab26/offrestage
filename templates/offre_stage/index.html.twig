@@ -3,7 +3,6 @@
 {% block title %}Offres de Stage{% endblock %}
 
 {% block body %}
-<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
@@ -90,7 +89,7 @@
         <div class="container">
             <a class="navbar-brand" href="index.html">
                 <img src="img/logo.png" alt="Logo" height="40" />
-                <span>Votre Entreprise</span>
+                <span>Stage Up</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -98,19 +97,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Accueil</a>
+                        <a class="nav-link" href="{{ path('app_dashboard') }}">Accueil</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about-us.html">À propos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-search"></i> Rechercher</a>
-                    </li>
-                </ul>
-                <a href="login.html" class="btn btn-outline-light ms-3">Se connecter</a>
+
+
             </div>
         </div>
     </nav>

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Postuler à l'offre{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Postuler à l'offre : {{ offreStage.titre }}</h1>
+
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.lettreMotivation) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.cv) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

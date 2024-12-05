@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Offres de Stage{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Liste des Offres de Stage</h1>
+
+        <div class="row">
+            {% for offre in offres %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ offre.titre }}</h5>
+                            <p class="card-text">{{ offre.description|slice(0, 100) }}...</p>
+                            <a href="{{ path('app_postuler_offre_stage', { 'id': offre.id }) }}" class="btn btn-primary">
+                                Postuler
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucune offre de stage disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
