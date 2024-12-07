@@ -14,10 +14,8 @@ class Candidature
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateSoumission = null;
 
     #[ORM\Column(length: 255)]
@@ -96,6 +94,7 @@ class Candidature
     public function setEtudiant(?User $etudiant): static
     {
         $this->etudiant = $etudiant;
+
 
         return $this;
     }

@@ -4,16 +4,41 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1>Postuler à l'offre : {{ offreStage.titre }}</h1>
+        <h1 class="text-center mb-4">Postuler à l'offre : {{ offreStage.titre }}</h1>
+        <p class="text-muted text-center mb-5">Étudiant : {{ app.user.prenom }} {{ app.user.nom }}</p> <!-- Affichage du nom de l'étudiant -->
 
-        {{ form_start(form) }}
-        <div class="mb-3">
-            {{ form_row(form.lettreMotivation) }}
+        {{ form_start(form, { 'attr': {'class': 'needs-validation'} }) }}
+        <div class="form-group">
+            {{ form_label(form.lettreDeMotivation, 'Lettre de Motivation') }}
+            {{ form_widget(form.lettreDeMotivation, {'attr': {'class': 'form-control'}}) }}
         </div>
-        <div class="mb-3">
-            {{ form_row(form.cv) }}
+        <div class="form-group">
+            {{ form_label(form.cv, 'CV') }}
+            {{ form_widget(form.cv, {'attr': {'class': 'form-control'}}) }}
         </div>
-        <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+        <button type="submit" class="btn btn-primary btn-block">Soumettre</button>
         {{ form_end(form) }}
     </div>
+
+    <!-- Styles personnalisés -->
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 8px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: #6c757d;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+    </style>
 {% endblock %}

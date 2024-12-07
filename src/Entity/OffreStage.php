@@ -43,6 +43,9 @@ class OffreStage
     #[ORM\JoinColumn(nullable: false)]
     private ?User $entreprise = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
     public function __construct()
     {
         $this->candidatures = new ArrayCollection();
@@ -151,6 +154,18 @@ class OffreStage
     public function setTypecontrat(string $typecontrat): static
     {
         $this->typecontrat = $typecontrat;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

@@ -3,25 +3,79 @@
 {% block title %}Liste des Offres de Stage{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Liste des Offres de Stage</h1>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="bg-light border-end vh-100" style="width: 250px;">
+            <div class="p-4">
+                <h4 class="text-primary fw-bold">Menu</h4>
+                <ul class="list-unstyled mt-4">
+                    <li class="mb-3">
+                        <a href="{{ path('app_offre_stage_liste') }}" class="nav-link d-flex align-items-center">
+                            <i class="bi bi-list me-2"></i> Liste des Offres
+                        </a>
+                    </li>
+                    <li class="mb-3">
+                        <a href="#" class="nav-link d-flex align-items-center">
+                            <i class="bi bi-person me-2"></i> Mes Candidatures
+                        </a>
+                    </li>
+                    <li class="mb-3">
+                        <a href="#" class="nav-link d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2"></i> Mon Profil
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link d-flex align-items-center">
+                            <i class="bi bi-box-arrow-right me-2"></i> Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-        <div class="row">
-            {% for offre in offres %}
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ offre.titre }}</h5>
-                            <p class="card-text">{{ offre.description|slice(0, 100) }}...</p>
-                            <a href="{{ path('app_postuler_offre_stage', { 'id': offre.id }) }}" class="btn btn-primary">
-                                Postuler
-                            </a>
-                        </div>
+        <!-- Main Content -->
+        <div class="flex-grow-1 p-4" style="background-color: #f9f9f9;">
+            <div class="container">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="text-primary fw-bold">Liste des Offres de Stage</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="row mb-4">
+                    <div class="col-md-8 offset-md-2">
+                        <form class="input-group shadow-sm">
+                            <input type="text" class="form-control rounded-pill" placeholder="Rechercher une offre..." aria-label="Rechercher une offre">
+                            <button class="btn btn-primary rounded-pill" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
-            {% else %}
-                <p>Aucune offre de stage disponible pour le moment.</p>
-            {% endfor %}
+
+                <!-- List of Offers -->
+                <div class="row">
+                    {% for offre in offres %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title text-primary">{{ offre.titre }}</h5>
+                                    <p class="card-text text-muted">{{ offre.description|slice(0, 100) }}...</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ path('app_postuler_offre_stage', { 'id': offre.id }) }}" class="btn btn-outline-primary rounded-pill">
+                                            <i class="bi bi-send me-2"></i> Postuler
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-center text-muted">Aucune offre de stage disponible pour le moment.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
