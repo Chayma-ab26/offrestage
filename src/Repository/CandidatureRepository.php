@@ -15,6 +15,29 @@ class CandidatureRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Candidature::class);
     }
+    public function countSubmittedCandidatures(): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    public function findAllWithRelations(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.etudiant', 'e') // Charger les étudiants associés
+            ->addSelect('e')
+            ->leftJoin('c.offreStage', 'o') // Charger les offres de stage associées
+            ->addSelect('o')
+            ->getQuery()
+            ->getResult();
+
+
+
+        return $this->render('candidature/index.html.twig', [
+            'candidatures' => $candidatures,
+        ]);
+    }
 
     //    /**
     //     * @return Candidature[] Returns an array of Candidature objects

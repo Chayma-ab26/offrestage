@@ -22,6 +22,14 @@ class OffreStageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    public function findAllWithUserDetails()
+    {
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.entreprise', 'u') // Joindre la relation avec l'entité User (entreprise)
+            ->addSelect('u') // Sélectionner les données de l'entreprise
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return OffreStage[] Returns an array of OffreStage objects
     //     */

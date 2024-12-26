@@ -14,13 +14,48 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/candidature')]
 final class CandidatureController extends AbstractController
 {
-    #[Route(name: 'app_candidature_index', methods: ['GET'])]
-    public function index(CandidatureRepository $candidatureRepository): Response
-    {
+    #[Route(name: 'app_candidature_index', methods: ['GET', 'POST'])]
+    public function index(
+        Request $request,
+        CandidatureRepository $candidatureRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Récupérer toutes les candidatures
+        $candidatures = $candidatureRepository->findAllWithRelations();
+
+        // Gestion du formulaire de changement de statut
+        if ($request->isMethod('POST')) {
+            $candidatureId = $request->request->get('candidature_id');
+            $newStatus = $request->request->get('status');
+
+            if ($candidatureId && $newStatus) {
+                $candidature = $candidatureRepository->find($candidatureId);
+
+                if ($candidature) {
+                    $candidature->setStatus($newStatus);
+                    $entityManager->flush();
+
+                    $this->addFlash('success', 'Le statut de la candidature a été mis à jour avec succès.');
+                } else {
+                    $this->addFlash('danger', 'Candidature non trouvée.');
+                }
+            } else {
+                $this->addFlash('danger', 'Données de formulaire invalides.');
+            }
+
+            return $this->redirectToRoute('app_candidature_index');
+        }
+        foreach ($candidatures as $candidature) {
+            if (!$candidature->getOffreStage()) {
+                dump($candidature->getId());
+            }
+        }
+
         return $this->render('candidature/index.html.twig', [
-            'candidatures' => $candidatureRepository->findAll(),
+            'candidatures' => $candidatures,
         ]);
     }
+
 
     #[Route('/new', name: 'app_candidature_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -77,5 +112,30 @@ final class CandidatureController extends AbstractController
         }
 
         return $this->redirectToRoute('app_candidature_index', [], Response::HTTP_SEE_OTHER);
+    }#[Route('/mes-candidatures', name: 'app_mes_candidatures')]
+public function mesCandidatures(CandidatureRepository $candidatureRepository): Response
+{
+    // Obtenir l'utilisateur connecté
+    $user = $this->getUser(); // Récupère l'utilisateur connecté
+
+    // Vérifier que l'utilisateur est connecté
+    if (!$user) {
+        throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
     }
+
+    // Vérifier que l'utilisateur a le rôle d'étudiant
+    if (!in_array('ROLE_ETUDIANT', $user->getRoles())) {
+        throw $this->createAccessDeniedException('Seuls les étudiants peuvent voir cette page.');
+    }
+
+    // Récupérer les candidatures de l'utilisateur connecté
+    $candidatures = $candidatureRepository->findBy(['user' => $user]);
+
+    // Renvoyer la vue Twig avec les candidatures
+    return $this->render('candidature/mes_candidatures.html.twig', [
+        'candidatures' => $candidatures,
+    ]);
+}
+
+
 }

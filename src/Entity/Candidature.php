@@ -33,6 +33,9 @@ class Candidature
     #[ORM\JoinColumn(nullable: false)]
     private ?User $etudiant = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $status = null;
+
     public function getId(): ?int
     {
         return $this->id;

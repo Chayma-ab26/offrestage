@@ -3,159 +3,183 @@
 {% block title %}Offres de Stage{% endblock %}
 
 {% block body %}
-<html lang="fr">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link rel="icon" href="img/favicon.png" type="image/png" />
-    <title>Offres de Stage</title>
+    <html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="icon" href="img/favicon.png" type="image/png" />
+        <title>Offres de Stage</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <link rel="stylesheet" href="css/style.css" />
 
-    <style>
-        /* Général */
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Poppins', sans-serif;
-        }
+        <style>
+            /* Sidebar */
+            .sidebar {
+                height: 100vh;
+                width: 250px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background-color: #002752;
+                color: #fff;
+                padding-top: 20px;
+                transition: all 0.3s;
+            }
+            .sidebar a {
+                color: #fff;
+                text-decoration: none;
+                padding: 10px 20px;
+                display: block;
+                font-size: 1rem;
+                border-radius: 4px;
+                transition: background 0.3s;
+            }
+            .sidebar a:hover {
+                background-color: #e0a800;
+            }
+            .sidebar .sidebar-header {
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
 
-        h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-        }
+            /* Main Content */
+            .content {
+                margin-left: 250px;
+                padding: 20px;
+                background-color: #f4f6f9;
+            }
 
-        .carousel-item img {
-            object-fit: cover;
-            height: 400px;
-        }
+            /* Styling Cards */
+            .card {
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
 
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            background: #ffffff;
-        }
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-        }
+            .card-body {
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 12px;
+            }
 
-        .badge {
-            background-color: #3498db;
-            color: #ffffff;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-        }
+            .card-footer {
+                background-color: #f9f9f9;
+                border-radius: 0 0 12px 12px;
+            }
 
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            transition: background-color 0.3s ease;
-        }
+            /* Inline icon styling */
+            .form-inline {
+                display: flex;
+                align-items: center;
+            }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
+            .form-inline .form-select {
+                width: auto; /* Réduit la largeur */
+                margin-right: 8px; /* Espacement entre le champ et l'icône */
+            }
 
-        footer {
-            background-color: #2c3e50;
-            color: #ffffff;
-            padding: 2rem 0;
-            text-align: center;
-        }
+            .status-update-icon {
+                color: #007bff;
+                cursor: pointer;
+                font-size: 1.2rem; /* Ajuste la taille de l'icône */
+            }
 
-        footer a {
-            color: #00a8ff;
-            text-decoration: none;
-        }
+            @media (max-width: 768px) {
+                .sidebar {
+                    width: 100px;
+                }
+                .content {
+                    margin-left: 100px;
+                }
+            }
+        </style>
+    </head>
 
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<body>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <img src="img/logo.png" alt="Logo" height="40" />
-                <span>Stage Up</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_dashboard') }}">Accueil</a>
-                    </li>
+    <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">Stage Up</div>
+        <a href="{{ path('app_dashboard') }}"><i class="fa-solid fa-house"></i> Accueil</a>
+        <a href="{{ path('app_offre_stage_new') }}"><i class="fa-solid fa-briefcase"></i> Ajouter Offres de Stage</a>
+        <a href="{{ path('app_offre_stage_index') }}"><i class="fa-solid fa-list"></i> Liste Offres de Stage</a> <!-- Lien vers la liste des offres de stage -->
+        <a href="{{ path('app_candidature_index') }}"><i class="fa-solid fa-user-check"></i> Candidatures</a> <!-- Lien vers les candidatures -->
+        <a href="#"><i class="fa-solid fa-envelope"></i> Contact</a>
+    </div>
 
 
-            </div>
-        </div>
-    </nav>
-</header>
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container py-5">
+            <h1 class="text-center mb-5">Nos Offres de Stage</h1>
 
-<div class="container py-5">
-    <h1 class="text-center mb-5">Nos Offres de Stage</h1>
-
-    <!-- Carousel -->
-    <div id="carouselOffres" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            {% for offre_stage in offre_stages|batch(3) %}
-                <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <div class="row">
-                        {% for offre in offre_stage %}
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">
-                                            <a href="{{ path('app_offre_stage_show', {'id': offre.id}) }}" class="text-dark">{{ offre.titre }}</a>
-                                        </h5>
-                                        <p class="card-text">
-                                            {{ offre.description|slice(0, 100) ~ '...' }}
-                                        </p>
-                                        <span class="badge">Contrat: {{ offre.typecontrat }}</span>
-                                    </div>
-                                    <div class="card-footer">
-                                        <div class="text-center">
-                                            <a href="{{ path('app_offre_stage_show', {'id': offre.id}) }}" class="btn btn-primary w-100">
-                                                Voir les détails
-                                            </a>
+            <!-- Carousel -->
+            <div id="carouselOffres" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for offre_stage in offre_stages|batch(3) %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                            <div class="row">
+                                {% for offre in offre_stage %}
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title">
+                                                    <a href="{{ path('app_offre_stage_show', {'id': offre.id}) }}" class="text-dark">{{ offre.titre }}</a>
+                                                </h5>
+                                                <p class="card-text">
+                                                    {{ offre.description|slice(0, 100) ~ '...' }}
+                                                </p>
+                                                <span class="badge bg-primary">Contrat: {{ offre.typecontrat }}</span>
+                                            </div>
+                                            <div class="card-footer">
+                                                <!-- Formulaire pour changer le statut -->
+                                                <form action="{{ path('app_offre_stage_index') }}" method="POST" class="form-inline">
+                                                    <input type="hidden" name="id" value="{{ offre.id }}">
+                                                    <label for="status-{{ offre.id }}" class="form-label">Statut :</label>
+                                                    <select name="status" class="form-select">
+                                                        <option value="ouverte" {% if offre.status == 'ouverte' %}selected{% endif %}>Ouverte</option>
+                                                        <option value="fermée" {% if offre.status == 'fermée' %}selected{% endif %}>Fermée</option>
+                                                        <option value="en cours de sélection" {% if offre.status == 'en cours de sélection' %}selected{% endif %}>En cours de sélection</option>
+                                                    </select>
+                                                    <i class="fas fa-check status-update-icon" onclick="this.closest('form').submit();"></i>
+                                                </form>
+                                                <div class="text-center mt-3">
+                                                    <a href="{{ path('app_offre_stage_show', {'id': offre.id}) }}" class="btn btn-outline-primary w-100">
+                                                        Voir les détails
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endfor %}
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+
+                <!-- Carousel controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselOffres" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselOffres" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
         </div>
-
-        <!-- Carousel controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselOffres" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Précédent</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselOffres" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Suivant</span>
-        </button>
     </div>
-</div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
 {% endblock %}

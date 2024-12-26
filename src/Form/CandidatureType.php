@@ -23,6 +23,14 @@ $builder
 'required' => true,
 'mapped' => false,
 'attr' => ['accept' => '.pdf, .doc, .docx'],
+    ])
+    ->add('status', ChoiceType::class, [
+        'choices' => [
+            'En attente' => 'pending',
+            'Accepté' => 'accepted',
+            'Refusé' => 'rejected',
+        ],
+        'label' => 'Statut',
 ]);
 }
 

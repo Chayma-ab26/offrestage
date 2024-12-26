@@ -14,13 +14,31 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/offre/stage')]
 final class OffreStageController extends AbstractController
 {
-    #[Route(name: 'app_offre_stage_index', methods: ['GET'])]
-    public function index(OffreStageRepository $offreStageRepository): Response
+    #[Route(name: 'app_offre_stage_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, OffreStageRepository $offreStageRepository, EntityManagerInterface $entityManager): Response
     {
+        // Si une mise à jour de statut est demandée
+        if ($request->isMethod('POST')) {
+            $offreStageId = $request->request->get('id');
+            $status = $request->request->get('status');
+
+            // Récupérer l'offre de stage à mettre à jour
+            $offreStage = $offreStageRepository->find($offreStageId);
+
+            if ($offreStage && in_array($status, ['ouverte', 'fermée', 'en cours de sélection'])) {
+                // Mettre à jour le statut
+                $offreStage->setStatus($status);
+                $entityManager->flush(); // Sauvegarder les modifications en base de données
+
+                $this->addFlash('success', 'Le statut de l\'offre a été mis à jour avec succès.');
+            }
+        }
+
         return $this->render('offre_stage/index.html.twig', [
             'offre_stages' => $offreStageRepository->findAll(),
         ]);
     }
+
 
     #[Route('/new', name: 'app_offre_stage_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
