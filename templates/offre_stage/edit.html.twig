@@ -1,13 +1,155 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit OffreStage{% endblock %}
+{% block title %}Modifier une Offre de Stage{% endblock %}
 
 {% block body %}
-    <h1>Edit OffreStage</h1>
+    <html>
+    <head>
+    </head>
+    <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header"><i class="fa-solid fa-layer-group"></i> Stage Up</div>
+        <a href="{{ path('app_dashboard') }}"><i class="fa-solid fa-house"></i> Accueil</a>
+        <a href="{{ path('app_offre_stage_new') }}"><i class="fa-solid fa-briefcase"></i> Ajouter Offres de Stage</a>
+        <a href="{{ path('app_offre_stage_index') }}"><i class="fa-solid fa-list"></i> Liste Offres de Stage</a>
+        <a href="{{ path('app_candidature_index') }}"><i class="fa-solid fa-user-check"></i> Candidatures</a>
+        <a href="#"><i class="fa-solid fa-envelope"></i> Contact</a>
+    </div>
 
-    {{ include('offre_stage/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-dark text-white text-center py-3">
+                        <h4 class="mb-0">Modifier une Offre de Stage</h4>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-    <a href="{{ path('app_offre_stage_index') }}">back to list</a>
+                        <div class="form-group mb-3">
+                            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le titre de l\'offre'}}) }}
+                            {{ form_errors(form.titre) }}
+                        </div>
 
-    {{ include('offre_stage/_delete_form.html.twig') }}
+                        <div class="form-group mb-3">
+                            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la description'}}) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form_label(form.datePublication, 'Date de Publication', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.datePublication, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.datePublication) }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form_label(form.dateExpiration, 'Date d\'Expiration', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.dateExpiration) }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form_label(form.typecontrat, 'Type de Contrat', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.typecontrat, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.typecontrat) }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form_label(form.entreprise, 'Nom de l\'Entreprise', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.entreprise, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form_label(form.status, 'Statut de l\'offre', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.status) }}
+                        </div>
+
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 py-3">Mettre à jour l'Offre</button>
+                        <a href="{{ path('app_offre_stage_index') }}" class="btn btn-outline-secondary btn-lg px-5 py-3">Annuler</a>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Boutons avec effet de transition */
+        .btn {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #002752;
+            color: #fff;
+            padding-top: 20px;
+            transition: all 0.3s;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #e0a800;
+        }
+        .sidebar .sidebar-header {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: #f4f6f9;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100px;
+            }
+            .content {
+                margin-left: 100px;
+            }
+        }
+    </style>
+    </body>
+    </html>
 {% endblock %}

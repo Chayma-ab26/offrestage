@@ -15,6 +15,20 @@ class NotificationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Notification::class);
     }
+    // Dans NotificationRepository
+    // Dans NotificationRepository.php
+    public function findUnreadNotificationsForUser($user)
+    {
+        return $this->createQueryBuilder('n')
+            ->where('n.destinataire = :user')
+            ->andWhere('n.lue = 0')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    // Méthode pour marquer une notification comme lue
 
     //    /**
     //     * @return Notification[] Returns an array of Notification objects

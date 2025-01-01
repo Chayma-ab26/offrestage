@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/offre/stage')]
 final class OffreStageController extends AbstractController
@@ -28,17 +29,21 @@ final class OffreStageController extends AbstractController
             if ($offreStage && in_array($status, ['ouverte', 'fermée', 'en cours de sélection'])) {
                 // Mettre à jour le statut
                 $offreStage->setStatus($status);
+
                 $entityManager->flush(); // Sauvegarder les modifications en base de données
 
                 $this->addFlash('success', 'Le statut de l\'offre a été mis à jour avec succès.');
+            } else {
+                $this->addFlash('error', 'Erreur : L\'offre de stage est introuvable ou le statut est invalide.');
             }
+
+            return $this->redirectToRoute('app_offre_stage_index');
         }
 
         return $this->render('offre_stage/index.html.twig', [
             'offre_stages' => $offreStageRepository->findAll(),
         ]);
     }
-
 
     #[Route('/new', name: 'app_offre_stage_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

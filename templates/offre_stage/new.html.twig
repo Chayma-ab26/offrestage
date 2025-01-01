@@ -61,14 +61,21 @@
                             {{ form_widget(form.entreprise, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
                         </div>
 
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3">Ajouter l'Offre</button>
-                            <a href="{{ path('app_offre_stage_index') }}" class="btn btn-outline-secondary btn-lg px-5 py-3">Annuler</a>
+
+                        <div class="form-group mb-3">
+                            {{ form_label(form.status, 'Statut de l\'offre', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.status) }}
                         </div>
 
-                        {{ form_end(form) }}
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 py-3">Ajouter l'Offre</button>
+                        <a href="{{ path('app_offre_stage_index') }}" class="btn btn-outline-secondary btn-lg px-5 py-3">Annuler</a>
                     </div>
                 </div>
+                {{ form_end(form) }}
+
             </div>
         </div>
     </div>

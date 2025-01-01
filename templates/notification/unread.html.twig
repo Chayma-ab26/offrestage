@@ -1,0 +1,11 @@
+<h2>Notifications non lues</h2>
+<ul>
+    {% for notification in notifications %}
+        <li>
+            {{ notification.message }} - {{ notification.dateEnvoi|date('d/m/Y H:i') }}
+            <form method="post" action="{{ path('app_notification_mark_as_read', { id: notification.id }) }}">
+                <button type="submit">Marquer comme lue</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>

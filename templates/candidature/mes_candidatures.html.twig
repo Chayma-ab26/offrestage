@@ -1,68 +1,146 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Candidature - Liste{% endblock %}
+{% block stylesheets %}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+        }
+        .sidebar {
+            background-color: #1e2a3a;
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            color: white;
+            box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .menu-item {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            color: #b0bec5;
+            font-size: 16px;
+        }
+        .sidebar .menu-item:hover {
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .sidebar .menu-item i {
+            margin-right: 15px;
+        }
+        .sidebar .menu-item a {
+            color: #b0bec5;
+            text-decoration: none;
+        }
+        .sidebar .menu-item a:hover {
+            color: #ffffff;
+        }
+        .dashboard {
+            margin-left: 270px;
+            padding: 30px;
+        }
+        .header {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Liste des Candidatures</h1>
+    <div class="sidebar">
+        <div class="menu-item">
+            <i class="fa fa-home"></i>
+            <a href="{{ path('app_etudiant_dashboard') }}">Dashboard</a>
+        </div>
+        <div class="menu-item">
+            <i class="fa fa-briefcase"></i>
+            <a href="{{ path('app_offre_stage_liste') }}">Offres de Stage</a>
+        </div>
+        <div class="menu-item">
+            <i class="fa fa-paper-plane"></i>
+            <a href="{{ path('app_mes_candidatures') }}">Mes Candidatures</a>
+        </div>
+        <div class="menu-item">
+            <i class="fa fa-user"></i>
+            <a href="#">Mon Profil</a>
+        </div>
+    </div>
 
-        <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Statut</th>
-                <th scope="col">Date de Soumission</th>
-                <th scope="col">CV</th>
-                <th scope="col">Lettre de Motivation</th>
-                <th scope="col" class="text-center">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for candidature in candidatures %}
-                <tr>
-                    <th scope="row">{{ candidature.id }}</th>
-                    <td>
-                        <form method="post" action="{{ path('app_candidature_index') }}">
-                            <input type="hidden" name="candidature_id" value="{{ candidature.id }}">
-                            <select name="status" class="form-select mb-2">
-                                <option value="pending" {{ candidature.status == 'pending' ? 'selected' : '' }}>En attente</option>
-                                <option value="accepted" {{ candidature.status == 'accepted' ? 'selected' : '' }}>Accepté</option>
-                                <option value="rejected" {{ candidature.status == 'rejected' ? 'selected' : '' }}>Refusé</option>
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm">Mettre à jour</button>
-                        </form>
-                    </td>
+    <div class="dashboard">
+        <div class="header">
+            <div class="welcome-message">
+                <h4>Bienvenue, <strong>cc</strong></h4>
+            </div>
+            <div class="profile">
+                <div class="dropdown">
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="#">Mon Profil</a></li>
+                        <li><a class="dropdown-item" href="#">Se déconnecter</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-                    <td>{{ candidature.dateSoumission ? candidature.dateSoumission|date('Y-m-d') : 'Non renseignée' }}</td>
-                    <td>
-                        {% if candidature.cv %}
-                            <a href="{{ asset('uploads/cv/' ~ candidature.cv) }}" class="btn btn-link" target="_blank">Voir</a>
-                        {% else %}
-                            Non disponible
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if candidature.lettreDeMotivation %}
-                            <a href="{{ asset('uploads/lettres/' ~ candidature.lettreDeMotivation) }}" class="btn btn-link" target="_blank">Voir</a>
-                        {% else %}
-                            Non disponible
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ path('app_candidature_show', {'id': candidature.id}) }}" class="btn btn-primary btn-sm">Voir</a>
-                        <a href="{{ path('app_candidature_edit', {'id': candidature.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-center">Aucun enregistrement trouvé</td>
-                </tr>
+        <div class="container table-container">
+            <h1 class="text-center mb-4">Mes Candidatures</h1>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
             {% endfor %}
-            </tbody>
-        </table>
 
-        <div class="text-end">
-            <a href="{{ path('app_candidature_new') }}" class="btn btn-success">Créer une nouvelle candidature</a>
+            {% if candidatures is empty %}
+                <div class="alert alert-warning text-center" role="alert">
+                    Aucune candidature envoyée.
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>Entreprise</th>
+                            <th>Date de Soumission</th>
+                            <th>Status</th>
+                            <th>Détails</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for candidature in candidatures %}
+                            <tr>
+                                <td>{{ candidature.offreStage.entreprise.nomEntreprise }}</td>
+                                <td>{{ candidature.dateSoumission|date('Y-m-d') }}</td>
+                                <td>{{ candidature.status }}</td>
+                                <td>
+                                    <a href="{{ path('app_candidature_show', {'id': candidature.id}) }}" class="btn btn-primary btn-sm">
+                                        Détails
+                                    </a>
+                                </td>
+                                <td>
+                                    <form action="{{ path('app_candidature_delete', {'id': candidature.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ candidature.id) }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

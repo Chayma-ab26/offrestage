@@ -27,8 +27,15 @@ class OffreStageType extends AbstractType
             ->add('typecontrat')
             ->add('entreprise', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nomentreprise',
             ]);
+        $builder->add('status', ChoiceType::class, [
+            'choices' => [
+                'Ouverte' => 'ouverte',
+                'Fermée' => 'fermée',
+            ],
+            'data' => 'ouverte', // Valeur par défaut
+        ]);
 
     }
 

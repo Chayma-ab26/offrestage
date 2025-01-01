@@ -33,10 +33,54 @@ class CandidatureRepository extends ServiceEntityRepository
             ->getResult();
 
 
-
         return $this->render('candidature/index.html.twig', [
             'candidatures' => $candidatures,
         ]);
+    }
+        public function countAccepted(): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.status = :status')
+            ->setParameter('status', 'accepted')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countCandidaturesByMonth(): array
+    {
+        $sql = "
+        SELECT 
+            DATE_FORMAT(c.date_soumission, '%Y') AS year, 
+            DATE_FORMAT(c.date_soumission, '%m') AS month, 
+            COUNT(c.id) AS count
+        FROM candidature c
+        GROUP BY year, month
+        ORDER BY year ASC, month ASC
+    ";
+
+        return $this->getEntityManager()
+            ->getConnection()
+            ->executeQuery($sql)
+            ->fetchAllAssociative();
+    }
+
+    public function findAllWithRelation(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.offreStage', 'o')->addSelect('o')
+            ->leftJoin('c.user', 'u')->addSelect('u')
+            ->getQuery()
+            ->getResult();
+    }
+    public function countCandidaturesByStudent($etudiant)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.etudiant = :etudiant')
+            ->setParameter('etudiant', $etudiant)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     //    /**

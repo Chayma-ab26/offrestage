@@ -119,7 +119,7 @@
 
                         <td>
                             {% if candidature.cv %}
-                                <a href="{{ asset('uploads/cv/' ~ candidature.cv) }}" class="btn btn-link" target="_blank">Voir</a>
+                                <a href="{{ asset('uploads/cv/' ~ candidature.cv) }}" class="btn btn-link" target="_blank" download>Voir</a>
                             {% else %}
                                 Non disponible
                             {% endif %}

@@ -10,30 +10,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         .navbar {
             background-color: #343a40;
         }
-
         .sidebar {
-            background-color: #f8f9fa;
             height: 100vh;
+            width: 230px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #002752;
+            color: #fff;
             padding-top: 20px;
         }
-
-        .sidebar .nav-item {
-            font-size: 16px;
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 10px;
+            display: block;
+            font-size: 1rem;
+            border-radius: 4px;
         }
-
-        .sidebar .nav-link {
-            color: #343a40;
+        .sidebar a:hover {
+            background-color: #e0a800;
         }
-
-        .sidebar .nav-link.active {
-            background-color: #007bff;
-            color: white;
+        .sidebar .sidebar-header {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
-
         .card-title {
             font-size: 18px;
             font-weight: bold;
@@ -69,37 +78,35 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ path('app_offre_stage_index') }}">
-                            <i class="mdi mdi-view-dashboard"></i>
-                            Dashboard
-                        </a>
+        <div class="sidebar">
+            <div class="sidebar-header">Stage Up</div>
+            <a href="{{ path('app_dashboard') }}"><i class="fa-solid fa-house"></i> Accueil</a>
+            <a href="{{ path('app_offre_stage_new') }}"><i class="fa-solid fa-briefcase"></i> Ajouter Offres de Stage</a>
+            <a href="{{ path('app_offre_stage_index') }}"><i class="fa-solid fa-list"></i> Liste Offres de Stage</a>
+            <a href="{{ path('app_candidature_index') }}"><i class="fa-solid fa-user-check"></i> Candidatures</a>
+            <a href="#"><i class="fa-solid fa-envelope"></i> Contact</a>
+            <a href="{{ path('app_notification_index') }}" class="notification-icon">
+                <i class="fa fa-bell "> Notification</i> <!-- Icône de notification -->
+                {% if unreadNotifications|length > 0 %}
+                    <span class="badge bg-danger">{{ unreadNotifications|length }}</span> <!-- Badge pour le nombre de notifications non lues -->
+                {% endif %}
+            </a>
+            <ul class="notification-list">
+                {% for notification in unreadNotifications %}
+                    <li class="notification-item">
+                        <div>
+                            <strong>{{ notification.message }}</strong>
+                            <small>{{ notification.dateEnvoi|date('Y-m-d H:i') }}</small>
+                        </div>
+                        <form action="{{ path('app_notification_mark_as_read', {'id': notification.id}) }}" method="post">
+                            <button type="submit" class="btn btn-sm btn-primary">Marquer comme lue</button>
+                        </form>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_offre_stage_index') }}" >
-                            <i class="mdi mdi-briefcase"></i>
-                            Offres de Stage
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_candidature_index') }}">
-                            <i class="mdi mdi-account-group"></i>
-                            Candidatures
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="mdi mdi-chart-line"></i>
-                            Statistiques
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+                {% else %}
+                    <li>Aucune notification non lue.</li>
+                {% endfor %}
+            </ul>
+        </div>
         <!-- Main Content -->
         <main role="main" class="col-md-9 ms-sm-auto col-lg-10 px-4">
             <div class="header-title mb-4">
@@ -130,12 +137,11 @@
                     <div class="card shadow">
                         <div class="card-body">
                             <h5 class="card-title">Candidatures Acceptées</h5>
-                            <h2 class="card-text">55</h2>
+                            <h2 class="card-text">{{ acceptedCount }}</h2> <!-- Afficher le nombre de candidatures acceptées -->
                             <p class="text-muted">Candidatures validées</p>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Graphiques -->
@@ -150,17 +156,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header">
-                            <h5 class="card-title">Candidatures par Domaine</h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="domaineChart"></canvas>
-                        </div>
-                    </div>
-                </div>
             </div>
+
 
             <!-- Tableau des Offres -->
             <div class="row">
@@ -177,7 +174,6 @@
                                     <th>Entreprise</th>
                                     <th>Date de Publication</th>
                                     <th>Date d'expiration</th>
-
                                     <th>Status</th>
                                 </tr>
                                 </thead>
@@ -186,7 +182,7 @@
                                     <tr>
                                         <td>{{ offre.titre }}</td>
                                         <td>
-                                            {% if offre.entreprise %}
+                                            {% if offre.entreprise and 'ROLE_ENTREPRISE' in offre.entreprise.roles %}
                                                 {{ offre.entreprise.nomentreprise }}
                                             {% else %}
                                                 Aucune entreprise associée
@@ -222,23 +218,39 @@
 </div>
 
 <!-- JS pour les graphiques -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Graphique pour les Candidatures par Mois
+    // Récupérer les données passées depuis le contrôleur
+    var months = {{ months | raw }};
+    var counts = {{ counts | raw }};
+
+    // Créer le graphique
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar', // Type de graphique (barres)
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: months, // Mois
             datasets: [{
-                label: 'Candidatures Soumises',
-                data: [12, 19, 3, 5, 2, 3],
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
+                label: 'Candidatures',
+                data: counts, // Nombre de candidatures par mois
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Couleur de fond des barres
+                borderColor: 'rgba(54, 162, 235, 1)', // Couleur de la bordure
+                borderWidth: 1
             }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true // Démarrer l'axe Y à zéro
+                }
+            }
         }
     });
+</script>
 
-    // Graphique pour les Candidatures par Domaine
+
+<script>
     var ctx2 = document.getElementById('domaineChart').getContext('2d');
     var domaineChart = new Chart(ctx2, {
         type: 'pie',

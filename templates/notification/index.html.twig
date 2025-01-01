@@ -27,6 +27,14 @@
                     <a href="{{ path('app_notification_edit', {'id': notification.id}) }}">edit</a>
                 </td>
             </tr>
+            <!-- templates/notification/index.html.twig -->
+            <h2>Notifications</h2>
+            <ul>
+                {% for notification in notifications %}
+                    <li>{{ notification.message }} - {{ notification.dateEnvoi|date('Y-m-d H:i') }}</li>
+                {% endfor %}
+            </ul>
+
         {% else %}
             <tr>
                 <td colspan="5">no records found</td>

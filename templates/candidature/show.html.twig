@@ -1,38 +1,48 @@
+{# templates/student/candidature_show.html.twig #}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Candidature{% endblock %}
+{% block title %}Détails de ma Candidature{% endblock %}
 
 {% block body %}
-    <h1>Candidature</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ candidature.id }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ candidature.status }}</td>
-            </tr>
-            <tr>
-                <th>DateSoumission</th>
-                <td>{{ candidature.dateSoumission ? candidature.dateSoumission|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Cv</th>
-                <td>{{ candidature.cv }}</td>
-            </tr>
-            <tr>
-                <th>LettreDeMotivation</th>
-                <td>{{ candidature.lettreDeMotivation }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_candidature_index') }}">back to list</a>
-
-    <a href="{{ path('app_candidature_edit', {'id': candidature.id}) }}">edit</a>
-
-    {{ include('candidature/_delete_form.html.twig') }}
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="text-center">Détails de la Candidature</h2>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold">Offre de stage:</div>
+                    <div class="col-md-8">{{ candidature.offreStage.titre }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold">Entreprise:</div>
+                    <div class="col-md-8">{{ candidature.offreStage.entreprise.nomentreprise }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold">Description de l'offre:</div>
+                    <div class="col-md-8">{{ candidature.offreStage.description }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold">Statut:</div>
+                    <div class="col-md-8">
+                        {% if candidature.status == 'accepted' %}
+                            <span class="badge bg-success">Acceptée</span>
+                        {% elseif candidature.status == 'rejected' %}
+                            <span class="badge bg-danger">Rejetée</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">En attente</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 font-weight-bold">Date de candidature:</div>
+                    <div class="col-md-8">{{ candidature.dateSoumission|date('d/m/Y') }}</div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{{ path('app_mes_candidatures') }}" class="btn btn-secondary">Retour à mes candidatures</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

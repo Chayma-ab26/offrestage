@@ -148,10 +148,12 @@
                                                     <select name="status" class="form-select">
                                                         <option value="ouverte" {% if offre.status == 'ouverte' %}selected{% endif %}>Ouverte</option>
                                                         <option value="fermée" {% if offre.status == 'fermée' %}selected{% endif %}>Fermée</option>
-                                                        <option value="en cours de sélection" {% if offre.status == 'en cours de sélection' %}selected{% endif %}>En cours de sélection</option>
                                                     </select>
-                                                    <i class="fas fa-check status-update-icon" onclick="this.closest('form').submit();"></i>
+                                                    <button type="submit" class="btn btn-primary btn-sm mt-2" title="Mettre à jour">
+                                                        <i class="fas fa-sync-alt"></i>
+                                                    </button>
                                                 </form>
+
                                                 <div class="text-center mt-3">
                                                     <a href="{{ path('app_offre_stage_show', {'id': offre.id}) }}" class="btn btn-outline-primary w-100">
                                                         Voir les détails

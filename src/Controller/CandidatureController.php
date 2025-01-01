@@ -16,10 +16,11 @@ final class CandidatureController extends AbstractController
 {
     #[Route(name: 'app_candidature_index', methods: ['GET', 'POST'])]
     public function index(
-        Request $request,
-        CandidatureRepository $candidatureRepository,
+        Request                $request,
+        CandidatureRepository  $candidatureRepository,
         EntityManagerInterface $entityManager
-    ): Response {
+    ): Response
+    {
         // Récupérer toutes les candidatures
         $candidatures = $candidatureRepository->findAllWithRelations();
 
@@ -56,6 +57,31 @@ final class CandidatureController extends AbstractController
         ]);
     }
 
+    #[Route('/mes-candidatures', name: 'app_mes_candidatures', methods: ['GET'])]
+    public function mesCandidatures(CandidatureRepository $candidatureRepository): Response
+    {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Vérification : l'utilisateur doit être connecté
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
+
+        // Vérifier si l'utilisateur est un étudiant
+        if (!in_array('ROLE_ETUDIANT', $user->getRoles())) {
+            throw $this->createAccessDeniedException('Seuls les étudiants peuvent consulter leurs candidatures.');
+        }
+
+
+        // Récupérer les candidatures envoyées par l'étudiant
+        $candidatures = $candidatureRepository->findBy(['etudiant' => $user]);
+
+        // Renvoyer une réponse avec les candidatures
+        return $this->render('candidature/mes_candidatures.html.twig', [
+            'candidatures' => $candidatures
+        ]);
+    }
 
     #[Route('/new', name: 'app_candidature_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -106,36 +132,41 @@ final class CandidatureController extends AbstractController
     #[Route('/{id}', name: 'app_candidature_delete', methods: ['POST'])]
     public function delete(Request $request, Candidature $candidature, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$candidature->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $candidature->getId(), $request->request->get('_token'))) {
             $entityManager->remove($candidature);
             $entityManager->flush();
+
+            // Ajout d'un message de succès
+            $this->addFlash('success', 'La candidature a été supprimée avec succès.');
+        } else {
+            // Ajout d'un message d'erreur si le token CSRF est invalide
+            $this->addFlash('danger', 'Le token CSRF est invalide. La suppression a échoué.');
         }
 
-        return $this->redirectToRoute('app_candidature_index', [], Response::HTTP_SEE_OTHER);
-    }#[Route('/mes-candidatures', name: 'app_mes_candidatures')]
-public function mesCandidatures(CandidatureRepository $candidatureRepository): Response
+        return $this->redirectToRoute('app_mes_candidatures', [], Response::HTTP_SEE_OTHER);
+    }
+ #[Route('/candidature/update/{id}', name: 'update_candidature_status')]
+public function updateStatus($id, Request $request, NotificationRepository $notificationRepository)
 {
-    // Obtenir l'utilisateur connecté
-    $user = $this->getUser(); // Récupère l'utilisateur connecté
+    // Trouver la candidature par son ID
+    $candidature = // Votre logique pour récupérer la candidature
 
-    // Vérifier que l'utilisateur est connecté
-    if (!$user) {
-        throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
-    }
+        // Mettre à jour le statut de la candidature
+        $candidature->setStatus('accepté'); // Exemple de changement de statut
 
-    // Vérifier que l'utilisateur a le rôle d'étudiant
-    if (!in_array('ROLE_ETUDIANT', $user->getRoles())) {
-        throw $this->createAccessDeniedException('Seuls les étudiants peuvent voir cette page.');
-    }
+    // Enregistrer la notification pour l'étudiant
+    $notification = new Notification();
+    $notification->setMessage('Votre candidature a changé de statut.')
+        ->setUser($candidature->getEtudiant())  // L'étudiant qui est lié à la candidature
+        ->setIsRead(false) // Non lue par défaut
+        ->setDateEnvoi(new \DateTime());
 
-    // Récupérer les candidatures de l'utilisateur connecté
-    $candidatures = $candidatureRepository->findBy(['user' => $user]);
+    // Sauvegarder la notification
+    $entityManager = $this->getDoctrine()->getManager();
+    $entityManager->persist($notification);
+    $entityManager->flush();
 
-    // Renvoyer la vue Twig avec les candidatures
-    return $this->render('candidature/mes_candidatures.html.twig', [
-        'candidatures' => $candidatures,
-    ]);
+    return $this->redirectToRoute('app_candidature_status'); // Rediriger après la mise à jour
 }
-
 
 }
