@@ -40,28 +40,19 @@ final class OffreStageController extends AbstractController
             return $this->redirectToRoute('app_offre_stage_index');
         }
 
-        return $this->render('offre_stage/index.html.twig', [
-            'offre_stages' => $offreStageRepository->findAll(),
-        ]);
-    }
+        $secteur = $request->query->get('secteuractivite', null);
 
-    #[Route('/new', name: 'app_offre_stage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $offreStage = new OffreStage();
-        $form = $this->createForm(OffreStageType::class, $offreStage);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($offreStage);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_offre_stage_index', [], Response::HTTP_SEE_OTHER);
+        // Si un secteur est sélectionné, filtrer les offres
+        if ($secteur) {
+            $offres = $offreStageRepository->findBySecteuractivite($secteur); // Utiliser la méthode modifiée
+        } else {
+            // Sinon, récupérer toutes les offres
+            $offres = $offreStageRepository->findAll();
         }
 
-        return $this->render('offre_stage/new.html.twig', [
-            'offre_stage' => $offreStage,
-            'form' => $form,
+        return $this->render('candidature/liste_offres.html.twig', [
+            'offres' => $offres,  // Passer les résultats filtrés ou non
+            'secteur' => $secteur,
         ]);
     }
 

@@ -23,8 +23,8 @@ $builder
 ->add('email')
 ->add('roles', ChoiceType::class, [
 "choices" => [
-"ROLE_ETUDIANT" => "ROLE_ETUDIANT",
-"ROLE_ENTREPRISE" => "ROLE_ENTREPRISE"
+"ETUDIANT" => "ROLE_ETUDIANT",
+"ENTREPRISE" => "ROLE_ENTREPRISE"
 ]
 ])
 ->add('agreeTerms', CheckboxType::class, [
@@ -75,9 +75,19 @@ new Length([
 'required' => false,
 'attr' => ['placeholder' => 'Describe your company'],
 ])
-->add('secteurActivite', TextType::class, [
-'required' => false,
-])
+    ->add('secteurActivite', ChoiceType::class, [
+        'label' => 'Secteur d\'activité',
+        'choices' => [
+            'Informatique' => 'informatique',
+            'Commerce' => 'commerce',
+            'Santé' => 'sante',
+            'Finance' => 'finance',
+
+            // Ajoutez d'autres secteurs ici
+        ],
+        'expanded' => false, // Par défaut, c'est une liste déroulante
+        'multiple' => false, // Une seule option peut être sélectionnée
+    ])
 ->add('telephoneentreprise', TextType::class, [
 'required' => false,
 ])
@@ -104,8 +114,9 @@ return explode(',', $rolesAsString);  // Conversion de la chaîne en tableau
 
 public function configureOptions(OptionsResolver $resolver): void
 {
-$resolver->setDefaults([
-'data_class' => User::class,
-]);
+    $resolver->setDefaults([
+        'data_class' => User::class,  // Ceci doit être l'entité User
+    ]);
+
 }
 }

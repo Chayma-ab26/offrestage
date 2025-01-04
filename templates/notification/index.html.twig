@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Notification index{% endblock %}
+{% block title %}Notifications{% endblock %}
 
 {% block body %}
-    <h1>Notification index</h1>
+    <h1>Notifications</h1>
 
-    <table class="table">
+    <table>
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Message</th>
-                <th>DateEnvoi</th>
-                <th>Lue</th>
-                <th>actions</th>
-            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Message</th>
+            <th>Date d'envoi</th>
+            <th>Lue</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
         {% for notification in notifications %}
@@ -21,27 +21,16 @@
                 <td>{{ notification.id }}</td>
                 <td>{{ notification.message }}</td>
                 <td>{{ notification.dateEnvoi ? notification.dateEnvoi|date('Y-m-d') : '' }}</td>
-                <td>{{ notification.lue }}</td>
+                <td>{{ notification.lue == 0 ? 'Non lue' : 'Lue' }}</td>
                 <td>
-                    <a href="{{ path('app_notification_show', {'id': notification.id}) }}">show</a>
-                    <a href="{{ path('app_notification_edit', {'id': notification.id}) }}">edit</a>
+                    <a href="{{ path('notification_mark_as_read', {'id': notification.id}) }}">Marquer comme lue</a>
                 </td>
             </tr>
-            <!-- templates/notification/index.html.twig -->
-            <h2>Notifications</h2>
-            <ul>
-                {% for notification in notifications %}
-                    <li>{{ notification.message }} - {{ notification.dateEnvoi|date('Y-m-d H:i') }}</li>
-                {% endfor %}
-            </ul>
-
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucune notification</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_notification_new') }}">Create new</a>
 {% endblock %}

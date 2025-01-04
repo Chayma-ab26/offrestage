@@ -17,18 +17,26 @@ class NotificationRepository extends ServiceEntityRepository
     }
     // Dans NotificationRepository
     // Dans NotificationRepository.php
+    // src/Repository/NotificationRepository.php
+
+    // src/Repository/NotificationRepository.php
+    // src/Repository/NotificationRepository.php
     public function findUnreadNotificationsForUser($user)
     {
         return $this->createQueryBuilder('n')
             ->where('n.destinataire = :user')
-            ->andWhere('n.lue = 0')
+            ->andWhere('n.lue = 0') // Récupère les notifications non lues
             ->setParameter('user', $user)
+            ->orderBy('n.dateEnvoi', 'DESC') // Trier par date d'envoi, de la plus récente à la plus ancienne
             ->getQuery()
             ->getResult();
     }
 
 
-    // Méthode pour marquer une notification comme lue
+
+
+
+// Méthode pour marquer une notification comme lue
 
     //    /**
     //     * @return Notification[] Returns an array of Notification objects

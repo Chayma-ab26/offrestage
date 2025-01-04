@@ -145,28 +145,62 @@ final class CandidatureController extends AbstractController
 
         return $this->redirectToRoute('app_mes_candidatures', [], Response::HTTP_SEE_OTHER);
     }
- #[Route('/candidature/update/{id}', name: 'update_candidature_status')]
-public function updateStatus($id, Request $request, NotificationRepository $notificationRepository)
-{
-    // Trouver la candidature par son ID
-    $candidature = // Votre logique pour récupérer la candidature
+    public function updateCandidatureStatus($id, Request $request)
+    {
+        // Récupérer la candidature par ID
+        $candidature = $this->getDoctrine()
+            ->getRepository(Candidature::class)
+            ->find($id);
 
-        // Mettre à jour le statut de la candidature
-        $candidature->setStatus('accepté'); // Exemple de changement de statut
+        if (!$candidature) {
+            throw $this->createNotFoundException('Candidature introuvable.');
+        }
 
-    // Enregistrer la notification pour l'étudiant
-    $notification = new Notification();
-    $notification->setMessage('Votre candidature a changé de statut.')
-        ->setUser($candidature->getEtudiant())  // L'étudiant qui est lié à la candidature
-        ->setIsRead(false) // Non lue par défaut
-        ->setDateEnvoi(new \DateTime());
+        // Mettre à jour le statut (exemple : "accepté")
+        $newStatus = $request->request->get('status'); // Nouveau statut
+        $candidature->setStatus($newStatus);
 
-    // Sauvegarder la notification
-    $entityManager = $this->getDoctrine()->getManager();
-    $entityManager->persist($notification);
-    $entityManager->flush();
+        // Créer une notification pour l'étudiant
+        $notification = new Notification();
+        $notification->setMessage("Votre candidature est désormais : $newStatus.")
+            ->setDestinataire($candidature->getEtudiant()) // Associer l'étudiant
+            ->setDateEnvoi(new \DateTime())
+            ->setIsRead(false); // Non lue par défaut
 
-    return $this->redirectToRoute('app_candidature_status'); // Rediriger après la mise à jour
-}
+        // Sauvegarder les changements
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($notification);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('candidature_list'); // Redirection après mise à jour
+    }
+
+    public function submitCandidature(Request $request)
+    {
+        // Création d'une nouvelle candidature
+        $candidature = new Candidature();
+        $candidature->setDetails($request->request->get('details'))
+            ->setEntreprise($this->getUser()->getEntreprise())  // Assurez-vous d'avoir l'entreprise de l'utilisateur
+            ->setDateSoumission(new \DateTime());
+
+        // Sauvegarder la candidature
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($candidature);
+        $entityManager->flush();
+
+        // Créer une notification pour l'entreprise
+        $notification = new Notification();
+        $notification->setMessage("Une nouvelle candidature a été soumise.")
+            ->setDestinataire($candidature->getEntreprise()) // Associer l'entreprise à la notification
+            ->setDateEnvoi(new \DateTime())
+            ->setLue(0); // Notification non lue par défaut
+
+        // Sauvegarder la notification
+        $entityManager->persist($notification);
+        $entityManager->flush();
+
+        // Redirection ou réponse après la soumission
+        return $this->redirectToRoute('candidature_success'); // Rediriger vers une page de succès
+    }
 
 }

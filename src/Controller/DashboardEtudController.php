@@ -30,7 +30,7 @@ $nombreOffres = $offreStageRepository->count([]);
 
 // Récupérer le nombre de candidatures soumises par l'étudiant connecté
 $candidatureCount = $candidatureRepository->count(['etudiant' => $user]);
-    $unreadNotifications = $notificationRepository->findBy(['destinataire' => $user, 'lue' => 0]);
+        $unreadNotifications = $notificationRepository->findUnreadNotificationsForUser($user);
 
 // Passer les données au template Twig
 return $this->render('dashboard/dashboardetud.html.twig', [

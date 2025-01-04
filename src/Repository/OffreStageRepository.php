@@ -30,7 +30,31 @@ class OffreStageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    //    /**
+    public function findBySecteuractivite(string $secteuractivite)
+    {
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.entreprise', 'e')
+            ->andWhere('e.secteuractivite = :secteuractivite')
+            ->setParameter('secteuractivite', $secteuractivite)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findBySecteur($secteur)
+    {
+        if (!$secteur) {
+            // Si aucun secteur n'est sélectionné, retourner toutes les offres
+            return $this->findAll();
+        }
+
+        // Rechercher les offres en fonction du secteur
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.secteur = :secteur')
+            ->setParameter('secteur', $secteur)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
     //     * @return OffreStage[] Returns an array of OffreStage objects
     //     */
     //    public function findByExampleField($value): array

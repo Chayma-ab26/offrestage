@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Profil{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card shadow-lg border-0 rounded">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Modifier votre profil</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+
+                        {% if app.user and 'ROLE_ENTREPRISE' in app.user.roles %}
+                            <div class="mb-3">
+                                {{ form_label(form.nomentreprise, 'Nom de l\'entreprise', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.nomentreprise, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.descriptionentreprise, 'Description de l\'entreprise', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.descriptionentreprise, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.secteuractivite, 'Secteur d\'activité', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.secteuractivite, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.telephoneentreprise, 'Téléphone de l\'entreprise', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.telephoneentreprise, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.adresseentreprise, 'Adresse de l\'entreprise', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.adresseentreprise, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            </div>
+
+                        {% endif %}
+
+                        {% if app.user and 'ROLE_ETUDIANT' in app.user.roles %}
+                            <div class="mb-3">
+                                {{ form_label(form.nom, 'Nom', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.nom, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.prenom, 'Prénom', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.prenom, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.educations, 'Éducation', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.educations, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.skills, 'Compétences', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.skills, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.experiences, 'Expériences', { 'label_attr': {'class': 'form-label fw-bold'} }) }}
+                                {{ form_widget(form.experiences, { 'attr': {'class': 'form-control shadow-sm'} }) }}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-primary px-4'} }) }}
+                            <a href="javascript:history.back()" class="btn btn-secondary px-4">Retour</a>
+                        </div>
+
+                        {{ form_end(form) }}
+
+                        <div class="text-center mt-4">
+                            <a href="{{ path('user_delete') }}" class="btn btn-danger px-4" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre profil ?');">
+                                Supprimer le profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

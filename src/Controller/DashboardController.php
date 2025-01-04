@@ -62,4 +62,24 @@ class DashboardController extends AbstractController
 
         ]);
     }
+    public function viewNotifications(NotificationRepository $notificationRepository): Response
+    {
+        // Récupérer l'entreprise de l'utilisateur connecté
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+        }
+
+        // Récupérer les notifications non lues pour l'entreprise
+        $notifications = $notificationRepository->findBy([
+            'destinataire' => $user->getEntreprise(), // Filtrer par entreprise
+            'lue' => 0, // Filtrer par notifications non lues
+        ]);
+
+        // Passer les notifications à la vue
+        return $this->render('notification/index.html.twig', [
+            'notifications' => $notifications,
+        ]);
+    }
+
 }

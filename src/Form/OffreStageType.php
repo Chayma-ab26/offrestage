@@ -24,6 +24,7 @@ class OffreStageType extends AbstractType
             ->add('dateExpiration', null, [
                 'widget' => 'single_text',
             ])
+
             ->add('typecontrat')
             ->add('entreprise', EntityType::class, [
                 'class' => User::class,

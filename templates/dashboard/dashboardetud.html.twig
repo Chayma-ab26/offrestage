@@ -137,35 +137,32 @@
     </div>
     <div class="menu-item">
         <i class="fa fa-user"></i>
-        <a href="#">Mon Profil</a>
+        <a href="{{ path('app_profile') }}">Mon Profil</a>
     </div>
-
     <div class="menu-item">
-        <a href="{{ path('app_notification_index') }}" class="notification-icon">
-            <i class="fa fa-bell "> Notification</i> <!-- Icône de notification -->
+        <i class="fas fa-sign-out-alt"></i>
+        <a href="{{ path('app_logout') }}">Deconnexion</a>
+    </div>
+    <div class="notification-menu">
+        <a href="{{ path('app_notification_index') }}" class="notification-link">
+            <i class="fa fa-bell"></i>
             {% if unreadNotifications|length > 0 %}
-                <span class="badge bg-danger">{{ unreadNotifications|length }}</span> <!-- Badge pour le nombre de notifications non lues -->
+                <span class="badge">{{ unreadNotifications|length }}</span>
             {% endif %}
         </a>
-    </div>
-    <div class="menu-item">
-        <ul class="notification-list">
+        <ul class="dropdown-menu">
             {% for notification in unreadNotifications %}
-                <li class="notification-item">
-                    <div>
-                        <strong>{{ notification.message }}</strong>
-                        <small>{{ notification.dateEnvoi|date('Y-m-d H:i') }}</small>
-                    </div>
-                    <form action="{{ path('app_notification_mark_as_read', {'id': notification.id}) }}" method="post">
-                        <button type="submit" class="btn btn-sm btn-primary">Marquer comme lue</button>
-                    </form>
+                <li>
+                    <a href="{{ path('app_notification_mark_read', { id: notification.id }) }}">
+                        {{ notification.message }}
+                        <small>{{ notification.dateEnvoi|date('d/m/Y H:i') }}</small>
+                    </a>
                 </li>
             {% else %}
-                <li>Aucune notification non lue.</li>
+                <li><a href="#">Aucune notification non lue.</a></li>
             {% endfor %}
         </ul>
     </div>
-
 
 
 
@@ -174,16 +171,10 @@
 
     <div class="header">
         <div class="welcome-message">
-            <h4>Bienvenue, <strong>cc</strong></h4>
+            <h4>Bienvenue, <strong>{{ app.user.prenom }}</strong></h4>
         </div>
         <div class="profile">
-            <div class="dropdown">
-                <img src="https://via.placeholder.com/40" alt="Profile Picture" class="dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="#">Mon Profil</a></li>
-                    <li><a class="dropdown-item" href="#">Se déconnecter</a></li>
-                </ul>
-            </div>
+
         </div>
     </div>
     <div class="row">

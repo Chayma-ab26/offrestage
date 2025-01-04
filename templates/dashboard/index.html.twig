@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -8,68 +7,82 @@
     <title>Dashboard Entreprise - Candidature de Stage</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <style>
-        .navbar {
-            background-color: #343a40;
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
+        .navbar {
+            background-color: #003366;
+            color: #fff;
+        }
+
         .sidebar {
             height: 100vh;
             width: 230px;
             position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #002752;
+            background-color: #003366;
             color: #fff;
             padding-top: 20px;
+            overflow-y: auto;
         }
+
         .sidebar a {
-            color: #fff;
+            color: #adb5bd;
             text-decoration: none;
-            padding: 10px 10px;
+            padding: 10px 15px;
             display: block;
-            font-size: 1rem;
-            border-radius: 4px;
+            margin: 10px 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
-        .sidebar a:hover {
-            background-color: #e0a800;
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #0056b3;
+            color: #fff;
         }
-        .sidebar .sidebar-header {
+
+        .sidebar-header {
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
+            margin-bottom: 30px;
+            color: #ffc107;
         }
 
-        .card-text {
-            font-size: 32px;
-            font-weight: bold;
-            color: #007bff;
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
         }
 
-        .card-body {
-            background-color: #ffffff;
-        }
-
-        .table-striped tbody tr:nth-child(odd) {
-            background-color: #f8f9fa;
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .card-header {
-            background-color: #007bff;
-            color: white;
+            background-color: #003366;
+            color: #fff;
         }
 
-        .header-title {
-            font-size: 24px;
-            font-weight: bold;
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th {
+            background-color: #f1f1f1;
+        }
+
+        .badge {
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 370px;
         }
     </style>
 </head>
@@ -78,163 +91,114 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <nav class="sidebar">
             <div class="sidebar-header">Stage Up</div>
-            <a href="{{ path('app_dashboard') }}"><i class="fa-solid fa-house"></i> Accueil</a>
-            <a href="{{ path('app_offre_stage_new') }}"><i class="fa-solid fa-briefcase"></i> Ajouter Offres de Stage</a>
-            <a href="{{ path('app_offre_stage_index') }}"><i class="fa-solid fa-list"></i> Liste Offres de Stage</a>
-            <a href="{{ path('app_candidature_index') }}"><i class="fa-solid fa-user-check"></i> Candidatures</a>
-            <a href="#"><i class="fa-solid fa-envelope"></i> Contact</a>
-            <a href="{{ path('app_notification_index') }}" class="notification-icon">
-                <i class="fa fa-bell "> Notification</i> <!-- Icône de notification -->
-                {% if unreadNotifications|length > 0 %}
-                    <span class="badge bg-danger">{{ unreadNotifications|length }}</span> <!-- Badge pour le nombre de notifications non lues -->
-                {% endif %}
-            </a>
-            <ul class="notification-list">
-                {% for notification in unreadNotifications %}
-                    <li class="notification-item">
-                        <div>
-                            <strong>{{ notification.message }}</strong>
-                            <small>{{ notification.dateEnvoi|date('Y-m-d H:i') }}</small>
-                        </div>
-                        <form action="{{ path('app_notification_mark_as_read', {'id': notification.id}) }}" method="post">
-                            <button type="submit" class="btn btn-sm btn-primary">Marquer comme lue</button>
-                        </form>
-                    </li>
-                {% else %}
-                    <li>Aucune notification non lue.</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <!-- Main Content -->
-        <main role="main" class="col-md-9 ms-sm-auto col-lg-10 px-4">
-            <div class="header-title mb-4">
-                <h2>Bienvenue sur le Dashboard de l'Entreprise</h2>
-            </div>
+            <a href="{{ path('app_dashboard') }}" class="active"><i class="fas fa-home"></i> Accueil</a>
+            <a href="{{ path('app_offre_stage_new') }}"><i class="fas fa-briefcase"></i> Ajouter Offres</a>
+            <a href="{{ path('app_offre_stage_index') }}"><i class="fas fa-list"></i> Liste Offres</a>
+            <a href="{{ path('app_candidature_index') }}"><i class="fas fa-user-check"></i> Candidatures</a>
+            <a href="{{ path('app_profile') }}"><i class="fas fa-user"></i> Profil</a>
+            <a href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+        </nav>
 
-            <!-- Row for Stats -->
+        <!-- Main Content -->
+        <div class="main-content col-md-9 ms-sm-auto col-lg-10">
+            <h2 class="mb-4">Bienvenue sur le Dashboard</h2>
+
+            <!-- Stats Cards -->
             <div class="row">
-                <div class="col-md-4 mb-5">
-                    <div class="card shadow">
+                <div class="col-md-4">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Offres Actuelles</h5>
-                            <h2 class="card-text">{{ nombreOffres }}</h2> <!-- Affichage du nombre d'offres -->
+                            <p class="card-text display-4">{{ nombreOffres }}</p>
                             <p class="text-muted">Offres de stage disponibles</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-5">
-                    <div class="card shadow">
+                <div class="col-md-4">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Candidatures Soumises</h5>
-                            <h2 class="card-text">{{ nombreCandidatures }}</h2>
+                            <p class="card-text display-4">{{ nombreCandidatures }}</p>
                             <p class="text-muted">Candidatures en attente</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-5">
-                    <div class="card shadow">
+                <div class="col-md-4">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Candidatures Acceptées</h5>
-                            <h2 class="card-text">{{ acceptedCount }}</h2> <!-- Afficher le nombre de candidatures acceptées -->
+                            <p class="card-text display-4">{{ acceptedCount }}</p>
                             <p class="text-muted">Candidatures validées</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Graphiques -->
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header">
-                            <h5 class="card-title">Candidatures par Mois</h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="myChart"></canvas>
-                        </div>
+            <!-- Chart -->
+            <div class="card mt-2">
+                <div class="card-header">Candidatures par Mois</div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="myChart"></canvas>
                     </div>
                 </div>
             </div>
 
-
-            <!-- Tableau des Offres -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card shadow">
-                        <div class="card-header">
-                            <h5 class="card-title">Liste des Offres de Stage</h5>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Nom de l'Offre</th>
-                                    <th>Entreprise</th>
-                                    <th>Date de Publication</th>
-                                    <th>Date d'expiration</th>
-                                    <th>Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for offre in offres %}
-                                    <tr>
-                                        <td>{{ offre.titre }}</td>
-                                        <td>
-                                            {% if offre.entreprise and 'ROLE_ENTREPRISE' in offre.entreprise.roles %}
-                                                {{ offre.entreprise.nomentreprise }}
-                                            {% else %}
-                                                Aucune entreprise associée
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ offre.datePublication |date('d/m/Y') }}</td>
-                                        <td>{{ offre.dateExpiration |date('d/m/Y') }}</td>
-
-                                        <td>
-                                            {% if offre.status == 'ouverte' %}
-                                                <span class="badge bg-success">Ouverte</span>
-                                            {% elseif offre.status == 'fermée' %}
-                                                <span class="badge bg-danger">Fermée</span>
-                                            {% else %}
-                                                <span class="badge bg-warning">En cours</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="4" class="text-center">Aucune offre disponible</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
+            <!-- Table -->
+            <div class="card mt-4">
+                <div class="card-header">Liste des Offres</div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Entreprise</th>
+                            <th>Publication</th>
+                            <th>Expiration</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for offre in offres %}
+                            <tr>
+                                <td>{{ offre.titre }}</td>
+                                <td>{{ offre.entreprise.nomentreprise }}</td>
+                                <td>{{ offre.datePublication|date('d/m/Y') }}</td>
+                                <td>{{ offre.dateExpiration|date('d/m/Y') }}</td>
+                                <td>
+                                            <span class="badge bg-{{ offre.status == 'ouverte' ? 'success' : 'danger' }}">
+                                                {{ offre.status }}
+                                            </span>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Aucune offre disponible</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </div>
 
-<!-- JS pour les graphiques -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Récupérer les données passées depuis le contrôleur
-    var months = {{ months | raw }};
-    var counts = {{ counts | raw }};
-
-    // Créer le graphique
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar', // Type de graphique (barres)
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: months, // Mois
+            labels: {{ months|raw }},
             datasets: [{
                 label: 'Candidatures',
-                data: counts, // Nombre de candidatures par mois
-                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Couleur de fond des barres
-                borderColor: 'rgba(54, 162, 235, 1)', // Couleur de la bordure
+                data: {{ counts|raw }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
         },
@@ -242,31 +206,12 @@
             responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true // Démarrer l'axe Y à zéro
+                    beginAtZero: true
                 }
             }
         }
     });
 </script>
-
-
-<script>
-    var ctx2 = document.getElementById('domaineChart').getContext('2d');
-    var domaineChart = new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: ['Informatique', 'Marketing', 'Finance', 'RH'],
-            datasets: [{
-                label: 'Candidatures',
-                data: [40, 30, 20, 10],
-                backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-                borderColor: ['rgb(75, 192, 192)', 'rgb(153, 102, 255)', 'rgb(255, 159, 64)', 'rgb(255, 99, 132)'],
-                borderWidth: 1
-            }]
-        }
-    });
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

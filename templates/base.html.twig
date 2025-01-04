@@ -23,6 +23,28 @@
     <div class="content">
         {% block content %}{% endblock %}
     </div>
+    <!-- Notifications -->
+    <div class="notification-icon">
+        <a href="{{ path('notification_list') }}">
+            <i class="fa fa-bell"></i>
+            {% if unreadNotifications|length > 0 %}
+                <span class="badge">{{ unreadNotifications|length }}</span>
+            {% endif %}
+        </a>
+    </div>
+
+    <!-- Liste des notifications -->
+    <ul>
+        {% for notification in unreadNotifications %}
+            <li>
+                <strong>{{ notification.message }}</strong>
+                <small>{{ notification.dateEnvoi|date('d/m/Y H:i') }}</small>
+            </li>
+        {% else %}
+            <li>Aucune notification non lue.</li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}
 </body>
 </html>
