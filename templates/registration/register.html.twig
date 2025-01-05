@@ -8,8 +8,8 @@
             <div class="col-12 col-md-8 col-lg-6 mx-auto">
                 <div class="card shadow-lg border-0 rounded-4 p-3">
                     <div class="card-body">
-                        <h2 class="text-center mb-4 text-primary">Create an Account</h2>
-                        <p class="text-center text-muted mb-5">Join us and start your journey</p>
+                        <h2 class="text-center mb-4 text-primary">Créer un compte</h2>
+                        <p class="text-center text-muted mb-5">Rejoignez-nous et commencez votre aventure</p>
 
                         {{ form_start(registrationForm, { 'attr': {'class': 'needs-validation', 'novalidate': 'true'} }) }}
 
@@ -97,18 +97,17 @@
                                 'attr': {'class': 'form-check-input'}
                             }) }}
                             <label class="form-check-label" for="agreeTerms">
-                                I agree to the terms and conditions.
-                            </label>
+                                J'accepte les termes et conditions.                            </label>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="d-grid gap-2 mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                            <button type="submit" class="btn btn-primary btn-lg">S'inscrire</button>
                         </div>
 
                         <!-- Login Link -->
                         <p class="text-center">
-                            Already have an account? <a href="{{ path('app_login') }}" class="text-decoration-none">Login here</a>
+                            Vous avez déjà un compte ?<a href="{{ path('app_login') }}" class="text-decoration-none">Connectez-vous ici</a>
                         </p>
 
                         {{ form_end(registrationForm) }}

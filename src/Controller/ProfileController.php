@@ -70,4 +70,18 @@ class ProfileController extends AbstractController
         $this->addFlash('success', 'Votre profil a été supprimé avec succès.');
         return $this->redirectToRoute('app_logout');
     }
+    #[Route(path: '/profile/{id}', name: 'app_profile_show', methods: ['GET'])]
+    public function showProfile(int $id): Response
+    {
+        $user = $this->entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('Candidat non trouvé.');
+        }
+
+        return $this->render('profile/show.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
 }

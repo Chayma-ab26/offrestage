@@ -16,7 +16,7 @@
                         <a href="{{ path('app_logout') }}" class="btn btn-sm btn-danger">Logout</a>
                     </div>
                 {% else %}
-                    <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
+                    <h1 class="h3 mb-3 font-weight-normal text-center">Veuillez vous connecter</h1>
 
                     <form method="post">
                         <div class="form-floating mb-3">
@@ -32,12 +32,11 @@
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                         <button class="btn btn-lg btn-primary w-100" type="submit">
-                            Sign in
-                        </button>
+                            Se connecter                        </button>
                     </form>
 
                     <div class="text-center mt-3">
-                        <small>Don't have an account? <a href="{{ path('app_register') }}">Register here</a></small>
+                        <small>Vous n'avez pas de compte ? <a href="{{ path('app_register') }}">Inscrivez-vous ici</a></small>
                     </div>
                 {% endif %}
             </div>

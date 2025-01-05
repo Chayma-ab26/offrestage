@@ -52,6 +52,9 @@
             border-radius: 15px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out;
+            height: 200px;
+            width: 320px;
+            margin-left: 100px;
         }
         .dashboard .card:hover {
             transform: scale(1.05);
@@ -60,29 +63,27 @@
             font-size: 24px;
             font-weight: 500;
         }
-        .dashboard .card-body {
-            font-size: 16px;
-            color: #607d8b;
-        }
         .header {
-            background-color: #ffffff;
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            background-color: #f8f9fa; /* Couleur de fond légère et neutre */
+            border-radius: 10px; /* Coins arrondis */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+            padding: 20px; /* Espacement interne */
+            margin-bottom: 20px;
         }
-        .header .profile {
-            display: flex;
-            align-items: center;
+        .header h4 {
+            font-size: 1.5rem; /* Taille de la police du message principal */
+            color: #007bff; /* Couleur bleu primaire */
         }
-        .header .profile img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 15px;
+        .header p {
+            font-size: 0.9rem; /* Taille de la description */
+            color: #6c757d; /* Couleur de texte secondaire */
         }
+        .site-name h5 {
+            font-size: 1.2rem; /* Taille pour le nom du site */
+            color: #495057; /* Couleur gris foncé */
+            text-align: right; /* Alignement à droite */
+        }
+
         .sidebar .nav-link i {
             font-size: 1.5rem;
         }
@@ -129,7 +130,7 @@
     </div>
     <div class="menu-item">
         <i class="fa fa-briefcase"></i>
-        <a href="{{ path('app_offre_stage_liste') }}">Offres de Stage</a>
+        <a href="{{ path('app_offre_stage_etudiant_index') }}">Offres de Stage</a>
     </div>
     <div class="menu-item">
         <i class="fa fa-paper-plane"></i>
@@ -143,40 +144,23 @@
         <i class="fas fa-sign-out-alt"></i>
         <a href="{{ path('app_logout') }}">Deconnexion</a>
     </div>
-    <div class="notification-menu">
-        <a href="{{ path('app_notification_index') }}" class="notification-link">
-            <i class="fa fa-bell"></i>
-            {% if unreadNotifications|length > 0 %}
-                <span class="badge">{{ unreadNotifications|length }}</span>
-            {% endif %}
-        </a>
-        <ul class="dropdown-menu">
-            {% for notification in unreadNotifications %}
-                <li>
-                    <a href="{{ path('app_notification_mark_read', { id: notification.id }) }}">
-                        {{ notification.message }}
-                        <small>{{ notification.dateEnvoi|date('d/m/Y H:i') }}</small>
-                    </a>
-                </li>
-            {% else %}
-                <li><a href="#">Aucune notification non lue.</a></li>
-            {% endfor %}
-        </ul>
-    </div>
+
 
 
 
 </div>
 <div class="dashboard">
 
-    <div class="header">
+    <div class="header d-flex justify-content-between align-items-center p-4 shadow-sm rounded" style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
         <div class="welcome-message">
-            <h4>Bienvenue, <strong>{{ app.user.prenom }}</strong></h4>
+            <h4 class="text-primary fw-bold mb-0">Bienvenue, <strong>{{ app.user.prenom }}</strong></h4>
+            <p class="mb-0 text-muted" style="font-size: 14px;">Vous êtes connecté à <strong>EduStage</strong></p>
         </div>
-        <div class="profile">
-
+        <div class="site-name">
+            <h5 class="text-secondary fw-bold mb-0">EduStage</h5>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-4">
             <div class="card">

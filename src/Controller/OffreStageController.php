@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/offre/stage')]
 final class OffreStageController extends AbstractController
 {
-    #[Route(name: 'app_offre_stage_index', methods: ['GET', 'POST'])]
+    #[Route('/offre/stage', name: 'app_offre_stage_index', methods: ['GET', 'POST'])]
     public function index(Request $request, OffreStageRepository $offreStageRepository, EntityManagerInterface $entityManager): Response
     {
         // Si une mise à jour de statut est demandée
@@ -37,22 +37,60 @@ final class OffreStageController extends AbstractController
                 $this->addFlash('error', 'Erreur : L\'offre de stage est introuvable ou le statut est invalide.');
             }
 
+            // Redirection après la mise à jour
             return $this->redirectToRoute('app_offre_stage_index');
         }
 
+
+            $offres = $offreStageRepository->findAll();
+
+
+        // Rendre le template 'offre_stage/index.html.twig'
+        return $this->render('offre_stage/index.html.twig', [
+            'offres' => $offres,  // Passer les résultats filtrés ou non
+        ]);
+    }
+    #[Route('/etudiant', name: 'app_offre_stage_etudiant_index', methods: ['GET', 'POST'])]
+    public function indexEtudiant(Request $request, OffreStageRepository $offreStageRepository): Response
+    {
+        // Récupérer le secteur sélectionné dans la requête (si présent)
         $secteur = $request->query->get('secteuractivite', null);
 
-        // Si un secteur est sélectionné, filtrer les offres
+        // Si un secteur est sélectionné, filtrer les offres de stage
         if ($secteur) {
-            $offres = $offreStageRepository->findBySecteuractivite($secteur); // Utiliser la méthode modifiée
+            $offres = $offreStageRepository->findBySecteuractivite($secteur);
         } else {
-            // Sinon, récupérer toutes les offres
+            // Sinon, récupérer toutes les offres de stage
             $offres = $offreStageRepository->findAll();
         }
 
+        // Rendre le template 'offre_stage/etudiant_index.html.twig'
         return $this->render('candidature/liste_offres.html.twig', [
-            'offres' => $offres,  // Passer les résultats filtrés ou non
-            'secteur' => $secteur,
+            'offres' => $offres, // Passer les résultats filtrés ou non
+            'secteur' => $secteur, // Passer la valeur du secteur si présente
+        ]);
+    }
+
+
+    #[Route('/new', name: 'app_offre_stage_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $offreStage = new OffreStage();
+
+        $form = $this->createForm(OffreStageType::class, $offreStage);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($offreStage);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Nouvelle offre de stage ajoutée avec succès.');
+
+            return $this->redirectToRoute('app_offre_stage_index');
+        }
+
+        return $this->render('offre_stage/new.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

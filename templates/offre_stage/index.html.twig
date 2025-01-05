@@ -21,30 +21,61 @@
                 height: 100vh;
                 width: 250px;
                 position: fixed;
-                top: 0;
-                left: 0;
-                background-color: #002752;
+                background-color: #003366;
                 color: #fff;
                 padding-top: 20px;
-                transition: all 0.3s;
+                transition: 0.3s;
             }
+
             .sidebar a {
-                color: #fff;
+                color: #adb5bd;
                 text-decoration: none;
-                padding: 10px 20px;
+                padding: 10px 15px;
                 display: block;
-                font-size: 1rem;
-                border-radius: 4px;
-                transition: background 0.3s;
+                margin: 10px 0;
+                border-radius: 5px;
+                transition: all 0.3s ease;
             }
-            .sidebar a:hover {
-                background-color: #e0a800;
+
+            .sidebar a:hover, .sidebar a.active {
+                background-color: #0056b3;
+                color: #fff;
             }
-            .sidebar .sidebar-header {
+
+            .sidebar-header {
                 text-align: center;
-                font-size: 1.5rem;
+                font-size: 1.8rem;
                 font-weight: bold;
-                margin-bottom: 20px;
+                margin-bottom: 30px;
+                color: #ffc107;
+            }
+
+            /* Main content */
+            .content {
+                margin-left: 250px;
+                padding: 20px;
+            }
+
+            .card {
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .form-control, .form-select {
+                border-radius: 10px;
+            }
+
+            .form-control:focus, .form-select:focus {
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            @media (max-width: 768px) {
+                .sidebar {
+                    width: 100px;
+                }
+                .content {
+                    margin-left: 100px;
+                }
             }
 
             /* Main Content */
@@ -108,7 +139,7 @@
     <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-header">Stage Up</div>
+        <div class="sidebar-header">EduStage</div>
         <a href="{{ path('app_dashboard') }}"><i class="fa-solid fa-house"></i> Accueil</a>
         <a href="{{ path('app_offre_stage_new') }}"><i class="fa-solid fa-briefcase"></i> Ajouter Offres de Stage</a>
         <a href="{{ path('app_offre_stage_index') }}"><i class="fa-solid fa-list"></i> Liste Offres de Stage</a> <!-- Lien vers la liste des offres de stage -->
@@ -127,10 +158,10 @@
             <!-- Carousel -->
             <div id="carouselOffres" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    {% for offre_stage in offre_stages|batch(3) %}
+                    {% for offre_stage in offres|batch(3) %}
                         <div class="carousel-item {% if loop.first %}active{% endif %}">
                             <div class="row">
-                                {% for offre in offre_stage %}
+                                {% for offre in offres %}
                                     <div class="col-lg-4 col-md-6 mb-4">
                                         <div class="card h-100">
                                             <div class="card-body text-center">

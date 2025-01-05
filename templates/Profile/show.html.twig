@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil - {{ user.prenom }} {{ user.nom }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0 text-center">Profil de {{ user.prenom }} {{ user.nom }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ user.prenom }} {{ user.nom }}</h5>
+                        <hr>
+                        <p><strong>Email :</strong> {{ user.email }}</p>
+                        <p><strong>Skills :</strong> {{ user.skills|nl2br }}</p>
+                        <p><strong>Expériences :</strong> {{ user.experiences|nl2br }}</p>
+                        <p><strong>Éducation :</strong> {{ user.educations|nl2br }}</p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+
+                    <a href="{{ path('app_candidature_index') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-list"></i> Liste des candidatures
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

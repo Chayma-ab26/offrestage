@@ -70,24 +70,73 @@
                 color: #607d8b;
             }
             .header {
-                background-color: #ffffff;
-                display: flex;
-                justify-content: space-between;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-                margin-bottom: 30px;
+                background-color: #f8f9fa; /* Couleur de fond légère et neutre */
+                border-radius: 10px; /* Coins arrondis */
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+                padding: 20px; /* Espacement interne */
+                margin-bottom: 20px;
             }
-            .header .profile {
+            .header h4 {
+                font-size: 1.5rem; /* Taille de la police du message principal */
+                color: #007bff; /* Couleur bleu primaire */
+            }
+            .header p {
+                font-size: 0.9rem; /* Taille de la description */
+                color: #6c757d; /* Couleur de texte secondaire */
+            }
+            .site-name h5 {
+                font-size: 1.2rem; /* Taille pour le nom du site */
+                color: #495057; /* Couleur gris foncé */
+                text-align: right; /* Alignement à droite */
+            }
+
+            /* Custom Search Bar Styles */
+            .search-bar {
                 display: flex;
                 align-items: center;
+                background-color: #ffffff;
+                border: 1px solid #ddd;
+                border-radius: 50px;
+                padding: 10px 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                transition: box-shadow 0.3s ease;
             }
-            .header .profile img {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                margin-right: 15px;
+
+            .search-bar:hover {
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
             }
+
+            .search-bar select {
+                border: none;
+                font-size: 16px;
+                color: #555;
+                width: 70%;
+                outline: none;
+                background: transparent;
+            }
+
+            .search-bar button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 30px;
+                padding: 8px 20px;
+                font-size: 16px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .search-bar button:hover {
+                background-color: #0056b3;
+            }
+
+            .search-bar button i {
+                margin-right: 8px;
+            }
+
         </style>
     </head>
 
@@ -100,7 +149,7 @@
             </div>
             <div class="menu-item">
                 <i class="fa fa-briefcase"></i>
-                <a href="{{ path('app_offre_stage_liste') }}">Offres de Stage</a>
+                <a href="{{ path('app_offre_stage_etudiant_index') }}">Offres de Stage</a>
             </div>
             <div class="menu-item">
                 <i class="fa fa-paper-plane"></i>
@@ -116,14 +165,16 @@
             </div>
         </div>
         <div class="dashboard">
-            <div class="header">
+            <div class="header d-flex justify-content-between align-items-center p-4 shadow-sm rounded" style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
                 <div class="welcome-message">
-                    <h4>Bienvenue, <strong>{{ app.user.prenom }}</strong></h4>
+                    <h4 class="text-primary fw-bold mb-0">Bienvenue, <strong>{{ app.user.prenom }}</strong></h4>
+                    <p class="mb-0 text-muted" style="font-size: 14px;">Vous êtes connecté à <strong>EduStage</strong></p>
                 </div>
-                <div class="profile">
-
+                <div class="site-name">
+                    <h5 class="text-secondary fw-bold mb-0">EduStage</h5>
                 </div>
             </div>
+
             <!-- Main Content -->
             <div class="flex-grow-1 p-4" style="background-color: #f9f9f9;">
                 <div class="container">
@@ -135,22 +186,19 @@
                     <!-- Search Bar -->
                     {# templates/candidature/liste_offres.html.twig #}
                     <!-- Search Bar Section -->
+                    <!-- Search Bar -->
                     <div class="row mb-4">
-                        <div class="col-md-8 offset-md-2 card p-4" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-                            <form method="get" action="{{ path('app_offre_stage_index') }}">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="input-group w-100">
-                                        <select name="secteuractivite" class="form-select form-select-lg" aria-label="Secteur d'activité">
-                                            <option value="">Tous les secteurs</option>
-                                            <option value="informatique" {% if app.request.query.get('secteuractivite') == 'informatique' %}selected{% endif %}>Informatique</option>
-                                            <option value="commerce" {% if app.request.query.get('secteuractivite') == 'commerce' %}selected{% endif %}>Commerce</option>
-                                            <option value="sante" {% if app.request.query.get('secteuractivite') == 'sante' %}selected{% endif %}>Santé</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary ms-3 rounded-pill px-4" style="font-size: 16px;">
-                                            <i class="fa fa-search me-2"></i> Filtrer
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="col-md-8 offset-md-2">
+                            <form method="get" action="{{ path('app_offre_stage_etudiant_index') }}" class="search-bar">
+                                <select name="secteuractivite" aria-label="Secteur d'activité">
+                                    <option value="">Tous les secteurs</option>
+                                    <option value="informatique" {% if app.request.query.get('secteuractivite') == 'informatique' %}selected{% endif %}>Informatique</option>
+                                    <option value="commerce" {% if app.request.query.get('secteuractivite') == 'commerce' %}selected{% endif %}>Commerce</option>
+                                    <option value="sante" {% if app.request.query.get('secteuractivite') == 'sante' %}selected{% endif %}>Santé</option>
+                                </select>
+                                <button type="submit">
+                                    <i class="fa fa-search"></i> Filtrer
+                                </button>
                             </form>
                         </div>
                     </div>
