@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Candidatures Acceptées{% endblock %}
+
+{% block body %}
+    <html lang="fr">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Candidatures Acceptées</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+
+            .sidebar {
+                height: 100vh;
+                width: 230px;
+                position: fixed;
+                background-color: #003366;
+                color: #fff;
+                padding-top: 20px;
+                overflow-y: auto;
+            }
+
+            .sidebar a {
+                color: #adb5bd;
+                text-decoration: none;
+                padding: 10px 15px;
+                display: block;
+                margin: 10px 0;
+                border-radius: 5px;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar a:hover,
+            .sidebar a.active {
+                background-color: #0056b3;
+                color: #fff;
+            }
+
+            .sidebar-header {
+                text-align: center;
+                font-size: 1.8rem;
+                font-weight: bold;
+                margin-bottom: 30px;
+                color: #ffc107;
+            }
+
+            .main-content {
+                margin-left: 250px;
+                padding: 20px;
+            }
+
+            h1 {
+                color: #003366;
+                font-weight: bold;
+            }
+
+            .table {
+                margin: 20px auto;
+                width: 80%; /* Réduction de la largeur */
+                max-width: 1000px;
+                font-size: 0.9rem; /* Réduction de la taille de la police */
+                background: white;
+                border: 1px solid #ddd;
+                box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+                margin-left: 20px;
+            }
+
+            .table th,
+            .table td {
+                text-align: center;
+                vertical-align: middle;
+                padding: 8px; /* Réduction des marges internes */
+            }
+
+            .table thead {
+                background-color: #003366;
+                color: white;
+            }
+
+            .table-hover tbody tr:hover {
+                background-color: #f1f5f9;
+            }
+
+            .btn-outline-primary {
+                border-color: #003366;
+                color: #003366;
+            }
+
+            .btn-outline-primary:hover {
+                background-color: #003366;
+                color: white;
+            }
+
+            .alert-info {
+                background-color: #e9f7fe;
+                color: #003366;
+            }
+
+            .badge {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                border-radius: 12px;
+            }
+        </style>
+    </head>
+
+    <body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- La sidebar est ici -->
+            <nav class="sidebar">
+                <div class="sidebar-header">EduStage</div>
+                <a href="{{ path('app_dashboard') }}" class="active"><i class="fas fa-home"></i> Accueil</a>
+                <a href="{{ path('app_offre_stage_new') }}"><i class="fas fa-briefcase"></i> Ajouter Offres</a>
+                <a href="{{ path('app_offre_stage_index') }}"><i class="fas fa-list"></i> Liste Offres</a>
+                <a href="{{ path('app_candidature_index') }}"><i class="fas fa-user-check"></i> Candidatures</a>
+                <a href="{{ path('app_candidature_accepte') }}"><i class="fas fa-user-check"></i> Candidatures Acceptées</a>
+                <a href="{{ path('app_profile') }}"><i class="fas fa-user"></i> Profil</a>
+                <a href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            </nav>
+
+            <!-- Contenu principal -->
+            <div class="main-content">
+                <h1 class="text-center mb-4">Candidatures Acceptées</h1>
+
+                {% if candidatures is empty %}
+                    <div class="alert alert-info text-center" role="alert">
+                        Aucune candidature acceptée trouvée.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for candidature in candidatures %}
+                                <tr>
+                                    <td>{{ candidature.id }}</td>
+                                    <td>{{ candidature.etudiant.nom }}</td>
+                                    <td>{{ candidature.etudiant.email }}</td>
+                                    <td>
+                                        <span class="badge bg-success">{{ candidature.status }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('app_candidature_envoyer_email', { id: candidature.id }) }}" class="btn btn-sm btn-outline-primary">
+                                            Envoyer un email
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </body>
+
+    </html>
+{% endblock %}

@@ -5,11 +5,15 @@ namespace App\Controller;
 use App\Entity\Candidature;
 use App\Form\CandidatureType;
 use App\Repository\CandidatureRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Mime\Email;
+
 
 #[Route('/candidature')]
 final class CandidatureController extends AbstractController
@@ -103,7 +107,7 @@ final class CandidatureController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_candidature_show', methods: ['GET'])]
+    #[Route('/candidature/{id}', name: 'app_candidature_show', methods: ['GET'])]
     public function show(Candidature $candidature): Response
     {
         return $this->render('candidature/show.html.twig', [
@@ -174,33 +178,53 @@ final class CandidatureController extends AbstractController
 
         return $this->redirectToRoute('candidature_list'); // Redirection après mise à jour
     }
+    // src/Controller/CandidatureController.php
+    #[Route('/accepte', name: 'app_candidature_accepte', methods: ['GET'])]
+    public function accepte(
+        CandidatureRepository $candidatureRepository
+    ): Response {
+        // Récupérer uniquement les candidatures acceptées
+        $candidatures = $candidatureRepository->findAcceptedCandidatures();
 
-    public function submitCandidature(Request $request)
-    {
-        // Création d'une nouvelle candidature
-        $candidature = new Candidature();
-        $candidature->setDetails($request->request->get('details'))
-            ->setEntreprise($this->getUser()->getEntreprise())  // Assurez-vous d'avoir l'entreprise de l'utilisateur
-            ->setDateSoumission(new \DateTime());
+        // Retourner la vue avec les candidatures acceptées
+        return $this->render('candidature/accepte.html.twig', [
+            'candidatures' => $candidatures,
+        ]);
+    }
 
-        // Sauvegarder la candidature
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($candidature);
-        $entityManager->flush();
+    #[Route('/candidature/{id}/email', name: 'app_candidature_envoyer_email', methods: ['GET'])]
+    public function envoyerEmail(
+        int $id,
+        CandidatureRepository $candidatureRepository,
+        MailerInterface $mailer,
+        \Twig\Environment $twig
+    ): Response {
+        $candidature = $candidatureRepository->find($id);
 
-        // Créer une notification pour l'entreprise
-        $notification = new Notification();
-        $notification->setMessage("Une nouvelle candidature a été soumise.")
-            ->setDestinataire($candidature->getEntreprise()) // Associer l'entreprise à la notification
-            ->setDateEnvoi(new \DateTime())
-            ->setLue(0); // Notification non lue par défaut
+        if (!$candidature) {
+            throw $this->createNotFoundException('Candidature introuvable.');
+        }
 
-        // Sauvegarder la notification
-        $entityManager->persist($notification);
-        $entityManager->flush();
+        $etudiant = $candidature->getEtudiant();
 
-        // Redirection ou réponse après la soumission
-        return $this->redirectToRoute('candidature_success'); // Rediriger vers une page de succès
+        $emailContent = $twig->render('email/candidature_acceptee.html.twig', [
+            'etudiant' => $etudiant,
+        ]);
+
+        $emailMessage = (new Email())
+            ->from('entreprise@example.com')
+            ->to($etudiant->getEmail())
+            ->subject('Félicitations pour votre candidature acceptée')
+            ->html($emailContent);
+
+        try {
+            $mailer->send($emailMessage);
+            $this->addFlash('success', "Email envoyé à {$etudiant->getNom()}.");
+        } catch (\Exception $e) {
+            $this->addFlash('danger', "Échec de l'envoi de l'email à {$etudiant->getNom()}.");
+        }
+
+        return $this->redirectToRoute('app_candidature_accepte');
     }
 
 }

@@ -82,6 +82,20 @@ class CandidatureRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    // src/Repository/CandidatureRepository.php
+    public function findAcceptedCandidatures()
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.status = :status')
+            ->setParameter('status', 'accepted') // Adaptez le statut selon vos valeurs
+            ->orderBy('c.dateSoumission', 'DESC') // Optionnel : trier par date ou autre champ
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
 
     //    /**
     //     * @return Candidature[] Returns an array of Candidature objects
